@@ -6,7 +6,15 @@
 **Publishing:** maximum **2 CppValley videos/week**  
 **Mastery rule:** never advance by hiding a failed gate. Repeat the weak lab/concept and mark the week `↻`.
 
-> Assumption: the two system-design volumes you mentioned are **Alex Xu, System Design Interview Vol. 1 & 2**. If you meant another author, replace that resource in the tracker.
+> Assumption: the two system-design volumes mentioned in the plan are **Alex Xu, System Design Interview Vol. 1 & 2**. If those books are different, update that resource when the distributed-systems phase begins.
+
+## Start here
+
+- [`ROADMAP.md`](ROADMAP.md) — phase index for all 65 weeks.
+- [`PROGRESS.md`](PROGRESS.md) — GitHub-native checkbox tracker for every week plus daily/weekly completion rules.
+- [`roadmap/`](roadmap/) — exhaustive week-by-week reading, implementation, mastery gate, DSA focus, and two CppValley video ideas.
+- [`templates/`](templates/) — lab, benchmark, ADR, interview, video, and retrospective templates.
+- [`interview/staff-stories.md`](interview/staff-stories.md) — sanitized Staff/Architect leadership-story journal.
 
 ## Non-negotiable learning loop
 
@@ -55,22 +63,26 @@ Total planned core work: **~17.75 hours/week**. MTech classes/assignments are ou
 
 ## Four public capstones
 
-- `projects/cppvalley-runtime` — queues, thread pool, allocators, concurrency/perf benchmarks.
+Create these progressively when their phases begin:
+
+- `projects/cppvalley-runtime` — queues, thread pool, allocators, concurrency/performance benchmarks.
 - `projects/cppvalley-kv` — epoll server, binary protocol, persistence, replication/sharding experiments.
 - `projects/cppvalley-exchange` — market-data feed, order book, matching engine, gateway, latency instrumentation.
-- `projects/cppvalley-inference` — CPU/CUDA ops, attention/KV cache, scheduler/inference experiments.
+- `projects/cppvalley-inference` — CPU/CUDA operations, attention/KV cache, scheduler/inference experiments.
+
+Do not create empty toy projects just to make the folders exist. Add each project when there is real, tested work to commit.
 
 ## CppValley video contract
 
 Every serious video follows:
 
-**Hook (surprising failure/result) -> Mental model -> Minimal code -> Break it -> Measure/profile -> Fix -> Limitations -> Interview Mode**
+**Hook (surprising failure/result) → Mental model → Minimal code → Break it → Measure/profile → Fix → Limitations → Interview Mode**
 
 Do not publish a performance claim without:
 - workload,
 - compiler + flags,
 - machine/OS,
-- iteration/warmup details,
+- iteration/warm-up details,
 - relevant percentiles,
 - raw/reproducible code,
 - limitations.
@@ -102,16 +114,10 @@ A solved problem does not count as retained until you can:
 Maintain 12 sanitized stories:
 architecture ownership, hard bug, performance improvement, disagreement, failure, ambiguity, cross-team influence, mentoring, technical debt, reliability, trade-off, incident/debugging.
 
-Never put Synopsys confidential code, architecture, screenshots, datasets, benchmarks, or internal details into this repository or CppValley.
+Never put employer-confidential code, architecture, screenshots, datasets, benchmarks, internal documents, or proprietary details into this repository or CppValley.
 
-## Tracker
+## Progress tracking
 
-Place `DreamRun_15_Month_Master_Tracker.xlsx` under `tracker/`. It contains:
-- dashboard,
-- all 65 weeks,
-- daily 7-day tracker,
-- 130-video pipeline,
-- DSA spaced-repetition sheet,
-- target-role matrix,
-- resources,
-- repo map.
+Use [`PROGRESS.md`](PROGRESS.md) as the canonical GitHub tracker. Check a week only after its mastery gate is passed closed-book. For daily work, copy the daily checklist from `PROGRESS.md` into that week's notes or issue.
+
+A separate Excel companion tracker can still be used locally for detailed time logging, DSA review dates, and video scheduling, but the repository is fully usable without it.
