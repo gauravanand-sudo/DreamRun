@@ -1,4 +1,4 @@
-# Interview Card: <concept>
+# Interview Card — <concept>
 
 ## 30-second answer
 
@@ -8,17 +8,29 @@
 
 ## Invariants
 
-## Trade-offs
+## Common traps
 
 ## Performance implications
 
-## Common traps
+## Design alternatives
 
 ## When NOT to use it
 
-## Follow-up questions
+## Follow-up ladder
+### Basic
 1.
 2.
-3.
-4.
-5.
+
+### Senior
+1.
+2.
+
+### Staff / Architect
+1.
+2.
+
+## Closed-book status
+- [ ] Can explain clearly
+- [ ] Can write a minimal example
+- [ ] Can diagnose a broken example
+- [ ] Can answer follow-ups under interruption
