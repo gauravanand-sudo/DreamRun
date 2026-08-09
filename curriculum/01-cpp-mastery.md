@@ -1,1838 +1,2311 @@
 # Curriculum 01 — Modern C++ Mastery
 
-This is the **canonical C++ curriculum for DreamRun**.
+This is the **only canonical C++ curriculum for DreamRun**.
 
-It is intentionally larger than Scott Meyers. The objective is not to finish a book, memorize trivia, or hit an upload count. The objective is that, for C++-heavy interviews and real systems work, **C++ itself is not the reason you fail**.
+It is intentionally linear. Follow **Unit 001 → Unit 002 → ...**. Do not jump ahead because a later topic looks exciting. Do not mark a unit complete because you read it once.
 
-There is **no fixed week count and no fixed video count**. One topic may produce one video; another may produce ten. Move on only after the mastery gate is passed.
+There is **no fixed video quota**. Each unit contains suggested CppValley videos; split a topic into more videos whenever the experiments justify it.
 
-> Important: Curriculum 01 is the C++ language/library/tooling layer. It does **not** by itself guarantee an offer at Google/FAANG, Adobe, NVIDIA, HFT firms, etc. DSA, concurrency, operating systems, networking, performance, system design, architecture, behavioral/Staff stories, CUDA and AI-infrastructure are separate DreamRun curricula. The exit bar here is: *C++ deep-dive questions should become a strength rather than a risk.*
+## How every unit works
 
----
+For every unit, do these in order:
 
-# 0. Source stack — use multiple layers, not one book
+1. **Read exactly what is listed.**
+2. **Close the source and explain it from memory.**
+3. **Implement / experiment.**
+4. **Break it deliberately.**
+5. **Inspect with compiler/debugger/sanitizer/assembly when relevant.**
+6. **Answer the mastery check without notes.**
+7. **Only then record the suggested CppValley videos.**
 
-## Mandatory spine
-
-1. **Scott Meyers — Effective Modern C++**
-   - All **42 items** are mandatory.
-   - Do not compress an item merely because it looks familiar.
-   - Scott is primarily C++11/C++14; it is not the end of modern C++.
-
-2. **cppreference**
-   - Use as the everyday exact-semantics reference for the language and standard library.
-   - For every topic, open the relevant language page and the relevant library page.
-
-3. **C++ Core Guidelines**
-   - Interfaces, ownership, resource management, expressions, classes, templates, concurrency, error handling and performance guidance.
-   - Treat guidelines as engineering guidance, not the language specification.
-
-4. **Compiler Explorer**
-   - Compare GCC and Clang.
-   - Inspect diagnostics, optimization, inlining, devirtualization, copies/moves and generated assembly when relevant.
-
-5. **GCC + Clang toolchains**
-   - Build with aggressive warnings.
-   - Typical baseline: `-Wall -Wextra -Wpedantic -Wconversion -Wshadow` plus topic-specific warnings.
-
-6. **Sanitizers**
-   - AddressSanitizer (ASan)
-   - UndefinedBehaviorSanitizer (UBSan)
-   - ThreadSanitizer (TSan — concurrency curriculum in depth)
-   - LeakSanitizer where available
-
-7. **Debugger / binary tools**
-   - gdb or lldb
-   - `nm`
-   - `readelf`
-   - `objdump`
-   - `ldd`
-   - compiler optimization reports
-
-## Mandatory depth books by topic
-
-8. **Nicolai Josuttis — C++ Move Semantics: The Complete Guide**
-   - Mandatory for the move/forwarding/value-category block.
-   - Use it to go beyond Scott on self-move, ref-qualified members, getters, polymorphic hierarchies, perfect returning, move iterators, container move behavior and move-only library types.
-
-9. **David Vandevoorde, Nicolai Josuttis, Douglas Gregor — C++ Templates: The Complete Guide, 2nd Edition**
-   - Mandatory template-depth source.
-   - All foundational template chapters are required.
-   - Advanced chapters are mapped below: dependent names, two-phase lookup, overload resolution, SFINAE, traits, variadics, CRTP, metaprogramming, explicit instantiation and generic-library design.
-
-10. **Nicolai Josuttis — C++17: The Complete Guide**
-    - Use to cover C++17 language and library additions systematically.
-
-11. **Nicolai Josuttis — C++20: The Complete Guide**
-    - Use for concepts, ranges, coroutines, modules and C++20 library evolution.
-
-12. **Nicolai Josuttis — C++23: The Complete Guide**
-    - Use for C++23 additions and their practical traps.
-
-## Strong supporting references
-
-13. **The C++ Standard Library — A Tutorial and Reference, 2nd Edition (Josuttis)**
-    - Useful for deep standard-library fundamentals.
-    - Cross-check all version-sensitive behavior against current cppreference because the book predates C++17/20/23.
-
-14. **Exceptional C++ / More Exceptional C++ (Herb Sutter) — selected problems**
-    - Optional depth source for exception safety, overloads, templates, lifetime and interface design.
-
-15. **Compiler / ABI documentation**
-    - Itanium C++ ABI where relevant on Linux toolchains.
-    - GCC/Clang docs for implementation-specific behavior.
+The target of Curriculum 01 is not “finish Scott Meyers.” The target is: **C++ deep-dive questions should be one of your strongest interview areas.** Company loops still require DSA, concurrency, OS, networking, performance, architecture, system design, behavioral/leadership and—depending on role—CUDA/AI systems. Those are later DreamRun curricula.
 
 ---
 
-# 1. Mastery protocol for every leaf topic
+# Stage 0 — C++ foundations Scott assumes
 
-Create a mastery unit using `templates/mastery-unit.md`.
+## Unit 001 — Translation units, declarations, definitions, ODR
 
-A leaf topic is not complete until you can check all of these:
+**Read**
+- cppreference: Definitions and ODR — https://en.cppreference.com/w/cpp/language/definition
+- cppreference: Translation phases — https://en.cppreference.com/w/cpp/language/translation_phases
+- C++ Core Guidelines: SF / source files sections.
 
-- [ ] Explain the concept closed-book in 30 seconds.
-- [ ] Explain it again at senior/Staff depth for 5–10 minutes.
-- [ ] State the formal rule accurately enough to predict code behavior.
-- [ ] Write a minimal correct example from memory.
-- [ ] Produce an edge-case matrix.
-- [ ] Produce at least one intentionally broken example when applicable.
-- [ ] Diagnose the broken example with compiler/debugger/sanitizer evidence when applicable.
-- [ ] State ownership and lifetime implications.
-- [ ] State exception-safety implications.
-- [ ] State compile-time/runtime/performance implications.
-- [ ] Compare at least two alternatives.
-- [ ] State when **not** to use the feature/idiom.
-- [ ] Answer basic → intermediate → senior → Staff follow-ups.
-- [ ] Pass a delayed review after at least one week without rereading notes first.
-- [ ] Only then extract CppValley videos.
+**Do**
+- Build a 3-translation-unit program.
+- Create one undefined-reference error and one multiple-definition error.
+- Compare declaration vs definition, ODR-use, inline function and inline variable.
 
-For language rules, do not accept “I know how I normally use it.” You must be able to predict unfamiliar code.
+**Videos**
+- `From .cpp to Program: Translation Units and the ODR`
+- `I Broke the One Definition Rule on Purpose`
 
----
+**Mastery check**
+Explain declaration, definition, ODR, ODR-use, translation unit and why `inline` is primarily an ODR/linkage concept rather than an optimization promise.
 
-# 2. Foundation that Scott Meyers assumes — mandatory before/during Scott
+## Unit 002 — Linkage, namespaces, lookup and ADL
 
-Scott does not reteach the entire C++ language. These foundations are therefore explicit DreamRun requirements.
+**Read**
+- cppreference: Storage duration / linkage — https://en.cppreference.com/w/cpp/language/storage_duration
+- Name lookup — https://en.cppreference.com/w/cpp/language/lookup
+- ADL — https://en.cppreference.com/w/cpp/language/adl
 
-## 2.1 Translation model and program structure
+**Do**
+- Demonstrate internal/external/no linkage.
+- Build a hidden-friend operator found by ADL.
+- Create name-hiding and ambiguous lookup examples.
 
-- [ ] Source file vs translation unit.
-- [ ] Preprocessing phases at a practical level.
-- [ ] Headers and textual inclusion.
-- [ ] Header guards vs `#pragma once` trade-off/portability awareness.
-- [ ] Declarations vs definitions.
-- [ ] One Definition Rule (ODR).
-- [ ] ODR-use.
-- [ ] Internal linkage, external linkage, no linkage, module linkage awareness.
-- [ ] `static` at namespace scope.
-- [ ] `extern`.
-- [ ] `inline` functions and inline variables — ODR meaning, not “compiler will inline”.
-- [ ] Anonymous namespaces.
-- [ ] Namespaces and namespace aliases.
-- [ ] Qualified vs unqualified lookup.
-- [ ] Argument-dependent lookup (ADL).
-- [ ] Hidden-friend idiom.
-- [ ] Name hiding.
-- [ ] Using-declarations vs using-directives.
-- [ ] Forward declarations and incomplete types.
-- [ ] Templates across translation units.
-- [ ] Explicit instantiation declaration/definition.
-- [ ] Basic module model awareness (deep C++20 section later).
+**Videos**
+- `C++ Name Lookup: Why the Compiler Found THAT Function`
+- `ADL and Hidden Friends: The Rule Behind operator<< Magic`
 
-### Labs
+**Mastery check**
+Predict lookup for qualified/unqualified names and explain when ADL participates.
 
-- Build a three-translation-unit program.
-- Intentionally create an ODR violation.
-- Create duplicate symbols and undefined references.
-- Inspect symbols with `nm`/`readelf`.
-- Demonstrate a hidden-friend operator found through ADL.
+## Unit 003 — Fundamental types, signedness, promotions and conversions
 
----
+**Read**
+- Fundamental types — https://en.cppreference.com/w/cpp/language/types
+- Implicit conversions — https://en.cppreference.com/w/cpp/language/implicit_conversion
+- Usual arithmetic conversions — https://en.cppreference.com/w/cpp/language/usual_arithmetic_conversions
 
-## 2.2 Fundamental types, literals and representation
+**Do**
+- Build 30 signed/unsigned/promotion cases.
+- Compile with `-Wconversion -Wsign-conversion` where supported.
+- Test narrowing and overflow behavior; distinguish defined, implementation-defined and undefined behavior.
 
-- [ ] `bool`, character types, signed/unsigned integer types, floating types.
-- [ ] `std::size_t`, `std::ptrdiff_t`, fixed-width integer types and when they are/are not guaranteed.
-- [ ] Integer ranges and implementation-defined widths.
-- [ ] Signed vs unsigned arithmetic.
-- [ ] Integer promotions.
-- [ ] Usual arithmetic conversions.
-- [ ] Signed/unsigned comparison traps.
-- [ ] Narrowing conversions.
-- [ ] Floating-point representation awareness, NaN/Inf basics.
-- [ ] Character encodings at a practical level: `char`, `wchar_t`, `char8_t`, `char16_t`, `char32_t`.
-- [ ] Integer/floating/string/character literals.
-- [ ] Suffixes.
-- [ ] Raw string literals.
-- [ ] User-defined literal mechanism awareness.
-- [ ] `sizeof`, `alignof`.
-- [ ] Alignment and padding.
-- [ ] Object representation vs value representation.
-- [ ] Endianness concept.
-- [ ] Trivially copyable types.
-- [ ] Standard-layout types.
-- [ ] POD as historical terminology; know why newer trait vocabulary matters.
+**Videos**
+- `Signed vs Unsigned: The C++ Bug That Passes Code Review`
+- `Integer Promotions: Why Your char Became an int`
 
-### Labs
+**Mastery check**
+Predict types/results of mixed arithmetic without running the code.
 
-- Print sizes/alignments of multiple aggregates.
+## Unit 004 — Literals, object representation, size, alignment and padding
+
+**Read**
+- Literals — https://en.cppreference.com/w/cpp/language/expressions#Literals
+- Object representation — https://en.cppreference.com/w/cpp/language/objects
+- `sizeof` — https://en.cppreference.com/w/cpp/language/sizeof
+- `alignof` — https://en.cppreference.com/w/cpp/language/alignof
+
+**Do**
+- Measure layouts of 20 structs.
 - Reorder members and explain padding changes.
-- Compare signed/unsigned expressions and warnings.
-- Use `std::bit_cast` later to inspect object representation safely for suitable types.
+- Inspect addresses/alignment; use `std::bit_cast` later only where legal.
+
+**Videos**
+- `Why This 9-Byte Struct Takes 16 Bytes`
+- `C++ Object Layout: Alignment and Padding Visualized`
+
+**Mastery check**
+Explain value representation vs object representation, padding, alignment and why layout is not fully portable.
+
+## Unit 005 — Every major initialization form
+
+**Read**
+- Initialization — https://en.cppreference.com/w/cpp/language/initialization
+- List initialization — https://en.cppreference.com/w/cpp/language/list_initialization
+- Value initialization — https://en.cppreference.com/w/cpp/language/value_initialization
+- Aggregate initialization — https://en.cppreference.com/w/cpp/language/aggregate_initialization
+
+**Do**
+- Create an `InitTracer` class.
+- Test default-, value-, direct-, copy-, direct-list-, copy-list-, aggregate- and reference-initialization.
+- Include most-vexing-parse and `initializer_list` overload cases.
+
+**Videos**
+- `C++ Has Too Many Initialization Forms — Here Is the Mental Model`
+- `() vs {} vs ={}: I Tested Every Constructor Path`
+
+**Mastery check**
+Given unfamiliar declarations, state exactly which initialization form occurs and which constructor wins.
+
+## Unit 006 — Pointers, references, cv-qualification and null
+
+**Read**
+- Pointers — https://en.cppreference.com/w/cpp/language/pointer
+- References — https://en.cppreference.com/w/cpp/language/reference
+- cv qualifiers — https://en.cppreference.com/w/cpp/language/cv
+- `nullptr` — https://en.cppreference.com/w/cpp/language/nullptr
+
+**Do**
+- Solve 40 declaration-reading exercises.
+- Compare `const T*`, `T* const`, `const T* const`, `T&`, `const T&`, `T&&`.
+- Test null overloads with `0`, `NULL`, `nullptr`.
+
+**Videos**
+- `Pointers and const: Read Any C++ Declaration Correctly`
+- `nullptr vs NULL vs 0: Overload Resolution Proves the Difference`
+
+**Mastery check**
+State mutability, reseatability, ownership implication and lifetime risk for each declaration.
+
+## Unit 007 — Arrays, functions and decay
+
+**Read**
+- Arrays — https://en.cppreference.com/w/cpp/language/array
+- Array-to-pointer conversion in implicit conversions.
+- Function pointers — https://en.cppreference.com/w/cpp/language/pointer#Pointers_to_functions
+
+**Do**
+- Pass arrays/functions by value-like parameter, reference and template reference.
+- Measure `sizeof` before/after decay.
+- Preserve array extent with templates.
+
+**Videos**
+- `Your C++ Array Disappeared Into a Pointer`
+- `How Templates Preserve Array Size Without std::array`
+
+**Mastery check**
+Predict when array/function type is preserved and when it decays.
+
+## Unit 008 — Expressions, value categories and materialization
+
+**Read**
+- Value categories — https://en.cppreference.com/w/cpp/language/value_category
+- Expressions — https://en.cppreference.com/w/cpp/language/expressions
+
+**Do**
+- Classify 50 expressions as lvalue/xvalue/prvalue.
+- Use `decltype((expr))` to verify.
+- Test temporary materialization and reference binding.
+
+**Videos**
+- `lvalue, xvalue, prvalue: Stop Memorizing and See the Model`
+- `I Classified 50 C++ Expressions by Value Category`
+
+**Mastery check**
+Classify expressions without relying on “has a name” shortcuts.
+
+## Unit 009 — Sequencing and evaluation order
+
+**Read**
+- Evaluation order — https://en.cppreference.com/w/cpp/language/eval_order
+
+**Do**
+- Build historical/unsequenced examples.
+- Compare guaranteed order introduced in newer standards where applicable.
+- Separate sequencing from CPU execution order.
+
+**Videos**
+- `C++ Evaluation Order: What Is Actually Guaranteed?`
+- `Undefined Behavior From One Innocent-Looking Expression`
+
+**Mastery check**
+Explain sequenced-before, indeterminately sequenced and unsequenced at practical interview depth.
+
+## Unit 010 — Functions, overload resolution and conversions
+
+**Read**
+- Overload resolution — https://en.cppreference.com/w/cpp/language/overload_resolution
+- Converting constructor — https://en.cppreference.com/w/cpp/language/converting_constructor
+- Conversion functions — https://en.cppreference.com/w/cpp/language/cast_operator
+
+**Do**
+- Create ambiguous overload sets.
+- Mix exact matches, promotions, conversions, user-defined conversions and templates.
+- Add deleted overloads and `explicit` constructors.
+
+**Videos**
+- `C++ Overload Resolution: How the Compiler Chooses a Function`
+- `I Built an Overload Set Designed to Confuse Senior Engineers`
+
+**Mastery check**
+List viable candidates and rank the winning conversion sequence for mixed cases.
+
+## Unit 011 — Classes, constructors, destructors and member initialization
+
+**Read**
+- Classes — https://en.cppreference.com/w/cpp/language/classes
+- Constructors — https://en.cppreference.com/w/cpp/language/constructor
+- Destructors — https://en.cppreference.com/w/cpp/language/destructor
+
+**Do**
+- Trace base/member construction and destruction order.
+- Demonstrate initializer-list textual order not controlling member construction order.
+- Test delegating/converting/explicit constructors.
+
+**Videos**
+- `C++ Construction Order: The Initializer List Can Lie to You`
+- `Constructors, Destructors and Object Birth/Death Traced`
+
+**Mastery check**
+Predict exact construction/destruction order in inheritance + composition cases.
+
+## Unit 012 — Special member functions and Rule of Zero/Three/Five
+
+**Read**
+- Rule of three/five/zero — https://en.cppreference.com/w/cpp/language/rule_of_three
+- Copy constructor / move constructor / assignments on cppreference.
+
+**Do**
+- Build a trait matrix of classes with user-declared destructor/copy/move operations.
+- Use `is_copy_constructible`, `is_move_constructible`, etc.
+
+**Videos**
+- `Rule of Zero, Three and Five: What the Compiler Generates`
+- `I Changed One Destructor and Lost My Move Constructor`
+
+**Mastery check**
+Predict which special members are declared, deleted or suppressed.
+
+## Unit 013 — Inheritance, virtual dispatch, RTTI and slicing
+
+**Read**
+- Derived classes — https://en.cppreference.com/w/cpp/language/derived_class
+- Virtual functions — https://en.cppreference.com/w/cpp/language/virtual
+- `dynamic_cast` — https://en.cppreference.com/w/cpp/language/dynamic_cast
+- `typeid` — https://en.cppreference.com/w/cpp/language/typeid
+
+**Do**
+- Build polymorphic hierarchy with/without virtual destructor.
+- Demonstrate slicing.
+- Inspect ABI-specific vtable/vptr behavior in Compiler Explorer/gdb and label it implementation-specific.
+
+**Videos**
+- `Virtual Functions: What C++ Guarantees vs What the ABI Does`
+- `Object Slicing: The Polymorphism Bug That Compiles`
+
+**Mastery check**
+Explain virtual dispatch during construction/destruction, slicing, RTTI and destructor requirements.
+
+## Unit 014 — Storage duration, object lifetime and temporary lifetime extension
+
+**Read**
+- Storage duration — https://en.cppreference.com/w/cpp/language/storage_duration
+- Object lifetime — https://en.cppreference.com/w/cpp/language/lifetime
+
+**Do**
+- Build lifetime-extension examples and non-extension counterexamples.
+- Create use-after-scope/dangling-reference bug zoo and run ASan.
+
+**Videos**
+- `C++ Object Lifetime: The Rule Behind Thousands of Bugs`
+- `Temporary Lifetime Extension: 10 Cases, 4 Traps`
+
+**Mastery check**
+For any object/reference in sample code, state lifetime begin/end and whether the reference can dangle.
+
+## Unit 015 — Dynamic memory, operator new/delete and placement new
+
+**Read**
+- `new` expression — https://en.cppreference.com/w/cpp/language/new
+- `delete` expression — https://en.cppreference.com/w/cpp/language/delete
+- Memory allocation functions — https://en.cppreference.com/w/cpp/memory/new/operator_new
+
+**Do**
+- Separate allocation from construction.
+- Implement placement-new experiment into aligned raw storage.
+- Deliberately mismatch delete forms and detect errors with sanitizers.
+
+**Videos**
+- `new Is Not operator new: Allocation vs Construction`
+- `Placement New: Constructing Objects in Raw Memory`
+
+**Mastery check**
+Explain allocation function vs new-expression and deallocation vs destructor.
+
+## Unit 016 — Exceptions and exception-safety guarantees
+
+**Read**
+- Exceptions — https://en.cppreference.com/w/cpp/language/exceptions
+- `noexcept` specification — https://en.cppreference.com/w/cpp/language/noexcept_spec
+- C++ Core Guidelines error handling section.
+
+**Do**
+- Build a class that leaks/corrupts state on exception, then make it basic/strong/no-throw safe.
+- Trace stack unwinding.
+
+**Videos**
+- `Exception Safety: Basic vs Strong vs No-Throw`
+- `I Injected Exceptions Into a C++ Class Until It Broke`
+
+**Mastery check**
+Given an operation, state its guarantee and how RAII makes it possible.
+
+## Unit 017 — Casts and type conversions
+
+**Read**
+- `static_cast` — https://en.cppreference.com/w/cpp/language/static_cast
+- `dynamic_cast` — https://en.cppreference.com/w/cpp/language/dynamic_cast
+- `const_cast` — https://en.cppreference.com/w/cpp/language/const_cast
+- `reinterpret_cast` — https://en.cppreference.com/w/cpp/language/reinterpret_cast
+
+**Do**
+- Build safe/unsafe examples for every cast.
+- Demonstrate why C-style cast hides intent.
+
+**Videos**
+- `The Four C++ Casts: What Each One Actually Promises`
+- `reinterpret_cast: What It Does NOT Make Safe`
+
+**Mastery check**
+Choose the correct cast—or refuse to cast—for unfamiliar scenarios.
+
+## Unit 018 — Undefined behavior, implementation-defined and unspecified behavior
+
+**Read**
+- UB overview — https://en.cppreference.com/w/cpp/language/ub
+
+**Do**
+- Create signed overflow, out-of-bounds, dangling, invalid shift and strict lifetime examples.
+- Observe optimizer effects under `-O0` vs `-O2/-O3`.
+
+**Videos**
+- `Undefined Behavior: Why the Optimizer Is Allowed to Betray You`
+- `I Compiled the Same UB at -O0 and -O3`
+
+**Mastery check**
+Distinguish undefined, unspecified and implementation-defined behavior with examples.
 
 ---
 
-## 2.3 Initialization — exhaustive practical model
+# Stage 1 — Scott Meyers, Effective Modern C++, every item in order
 
-- [ ] Default-initialization.
-- [ ] Value-initialization.
-- [ ] Zero-initialization.
-- [ ] Direct-initialization.
-- [ ] Copy-initialization.
-- [ ] Direct-list-initialization.
-- [ ] Copy-list-initialization.
-- [ ] Aggregate initialization.
-- [ ] Reference initialization.
-- [ ] Constant initialization.
-- [ ] Static initialization vs dynamic initialization awareness.
-- [ ] Initialization order of members.
-- [ ] Base-before-member construction order.
-- [ ] Member declaration order vs initializer-list textual order.
-- [ ] Most-vexing parse.
-- [ ] `initializer_list` overload preference.
-- [ ] Narrowing with braces.
-- [ ] Aggregate evolution across C++ versions.
-- [ ] Designated initializers (C++20 constraints later).
-- [ ] Static initialization order problem.
-- [ ] Function-local statics and thread-safe initialization since C++11.
+> **Primary reading for Units 019–060:** Scott Meyers, *Effective Modern C++*, the exact item named below. Read the entire item, including sidebars/notes. Then read the linked cppreference pages and run the lab.
 
-### Lab
+## Unit 019 — Scott Item 1: Understand template type deduction
 
-Create one `InitTracer` type and test every initialization form; record which constructor/operation is selected.
+**Read**
+- Scott Item 1 completely.
+- Template argument deduction — https://en.cppreference.com/w/cpp/language/template_argument_deduction
+
+**Do**
+- 100-case deduction matrix: `T`, `T&`, `const T&`, `T&&`, pointers, arrays, functions, cv/ref combinations.
+
+**Videos**
+- `Template Type Deduction: The Complete Mental Model`
+- `I Tested 100 Template-Deduction Cases Against GCC and Clang`
+- `Arrays, Functions and cv-ref Traps in Template Deduction`
+
+**Mastery check**
+≥90% closed-book on the 100-case matrix.
+
+## Unit 020 — Scott Item 2: Understand auto type deduction
+
+**Read**
+- Scott Item 2.
+- Placeholder type deduction — https://en.cppreference.com/w/cpp/language/auto
+
+**Do**
+- Rewrite Unit 019 cases with `auto`, `auto&`, `const auto&`, `auto&&` and braced initialization.
+
+**Videos**
+- `auto Is Template Deduction—Except When It Isn't`
+- `Brace Initialization vs auto: The Special Rule`
+
+**Mastery check**
+Predict both deduced type and expression category in mixed cases.
+
+## Unit 021 — Scott Item 3: Understand decltype
+
+**Read**
+- Scott Item 3.
+- `decltype` — https://en.cppreference.com/w/cpp/language/decltype
+
+**Do**
+- 40-case matrix covering names, member access, lvalues/xvalues/prvalues, parentheses and `decltype(auto)`.
+
+**Videos**
+- `decltype(x) vs decltype((x)): Two Parentheses Change the Type`
+- `decltype(auto): Power Tool or Dangling-Reference Machine?`
+
+**Mastery check**
+Predict every case without compiler help.
+
+## Unit 022 — Scott Item 4: Know how to view deduced types
+
+**Read**
+- Scott Item 4.
+- `type_traits` overview — https://en.cppreference.com/w/cpp/header/type_traits
+
+**Do**
+- Inspect types via compiler error, `static_assert`, IDE/debugger and runtime naming; document information each method loses.
+
+**Videos**
+- `Four Ways to Ask C++ “What Type Is This?”`
+- `Why typeid().name() Can Lie by Omission`
+
+**Mastery check**
+Choose a reliable type-inspection method for compile-time deduction problems.
+
+## Unit 023 — Scott Item 5: Prefer auto to explicit type declarations
+
+**Read**
+- Scott Item 5.
+
+**Do**
+- Iterator, lambda closure and `unordered_map` key/value iteration examples; find accidental copies from wrong explicit types.
+
+**Videos**
+- `auto Prevented a Hidden Copy in My unordered_map Loop`
+- `When auto Makes C++ Safer—and When It Hides Intent`
+
+**Mastery check**
+Explain correctness/maintenance reasons, not just typing convenience.
+
+## Unit 024 — Scott Item 6: Explicitly typed initializer idiom
+
+**Read**
+- Scott Item 6.
+- `vector<bool>` notes — https://en.cppreference.com/w/cpp/container/vector_bool
+
+**Do**
+- Build an educational proxy type; show `auto` preserving proxy and explicit materialization fixing lifetime/conversion behavior.
+
+**Videos**
+- `vector<bool> Is Not a vector of bools`
+- `When auto Captures a Proxy Instead of a Value`
+
+**Mastery check**
+Recognize proxy/expression-template hazards from an API signature.
+
+## Unit 025 — Scott Item 7: Distinguish () and {} when creating objects
+
+**Read**
+- Scott Item 7.
+- List initialization — https://en.cppreference.com/w/cpp/language/list_initialization
+
+**Do**
+- Exhaustive overload matrix with normal constructors and `initializer_list`; include vector size/value trap and narrowing.
+
+**Videos**
+- `() vs {}: The C++ Initialization War`
+- `initializer_list Wins Overloads You Didn't Expect`
+
+**Mastery check**
+Predict constructor selection for all matrix cases.
+
+## Unit 026 — Scott Item 8: Prefer nullptr to 0 and NULL
+
+**Read**
+- Scott Item 8.
+- `nullptr` page.
+
+**Do**
+- Pointer/integer overload sets and template forwarding cases.
+
+**Videos**
+- `nullptr vs NULL vs 0: Compiler Proof`
+- `Why NULL Breaks Generic C++ APIs`
+
+**Mastery check**
+Explain `std::nullptr_t` and overload behavior.
+
+## Unit 027 — Scott Item 9: Prefer alias declarations to typedefs
+
+**Read**
+- Scott Item 9.
+- Type aliases — https://en.cppreference.com/w/cpp/language/type_alias
+
+**Do**
+- Convert nested typedef-heavy traits to aliases and alias templates.
+
+**Videos**
+- `using vs typedef: The Difference Matters in Templates`
+- `Alias Templates Remove an Entire Layer of Metaprogramming`
+
+**Mastery check**
+Write alias templates from memory and explain dependent-type advantages.
+
+## Unit 028 — Scott Item 10: Prefer scoped enums
+
+**Read**
+- Scott Item 10.
+- Enumeration declarations — https://en.cppreference.com/w/cpp/language/enum
+
+**Do**
+- Compare unscoped/scoped enum name pollution and conversions; choose explicit underlying types for wire/storage examples.
+
+**Videos**
+- `enum vs enum class: More Than Namespace Pollution`
+- `Enum Underlying Types and Serialization Traps`
+
+**Mastery check**
+Explain scope, conversion, forward declaration and ABI/storage implications.
+
+## Unit 029 — Scott Item 11: Prefer deleted functions
+
+**Read**
+- Scott Item 11.
+- Function definition `= delete` — https://en.cppreference.com/w/cpp/language/function#Deleted_functions
+
+**Do**
+- Delete copy operations and dangerous conversions; compare with private undeclared functions.
+
+**Videos**
+- `= delete: Turning Bad Calls Into Good Compiler Errors`
+- `Deleted Functions Still Participate in Overload Resolution`
+
+**Mastery check**
+Predict how deleted candidates affect overload resolution.
+
+## Unit 030 — Scott Item 12: Declare overriding functions override
+
+**Read**
+- Scott Item 12.
+- Virtual functions page.
+
+**Do**
+- Break overrides with `const`, ref qualifiers and parameter changes; let `override` catch every case.
+
+**Videos**
+- `override Finds Bugs Humans Miss`
+- `One const Broke My Virtual Override`
+
+**Mastery check**
+Explain override matching and `final`.
+
+## Unit 031 — Scott Item 13: Prefer const_iterators
+
+**Read**
+- Scott Item 13.
+- Iterator library — https://en.cppreference.com/w/cpp/iterator
+
+**Do**
+- Search/insert/erase workflows using `cbegin/cend` and const iterators.
+
+**Videos**
+- `iterator vs const_iterator: Mutability Is API Design`
+- `Modern C++ const Iterators Without Legacy Pain`
+
+**Mastery check**
+Choose iterator constness based on operation intent.
+
+## Unit 032 — Scott Item 14: Declare functions noexcept if they will not emit exceptions
+
+**Read**
+- Scott Item 14.
+- `noexcept` specification page.
+
+**Do**
+- Vector relocation with throwing vs `noexcept` move; inspect `is_nothrow_move_constructible`.
+
+**Videos**
+- `One noexcept Changed How vector Reallocated`
+- `noexcept Is a Contract, Not a Performance Keyword`
+
+**Mastery check**
+Explain termination, conditional noexcept and container consequences.
+
+## Unit 033 — Scott Item 15: Use constexpr whenever possible
+
+**Read**
+- Scott Item 15.
+- Constant expressions — https://en.cppreference.com/w/cpp/language/constant_expression
+- `constexpr` — https://en.cppreference.com/w/cpp/language/constexpr
+
+**Do**
+- Build compile-time validated utility; compare what C++14/17/20 allow.
+
+**Videos**
+- `constexpr Does Not Mean “Always Compile Time”`
+- `Turning Runtime Bugs Into Compile-Time Errors With constexpr`
+
+**Mastery check**
+Explain constant evaluation vs constexpr eligibility.
+
+## Unit 034 — Scott Item 16: Make const member functions thread safe
+
+**Read**
+- Scott Item 16.
+- `mutable` — https://en.cppreference.com/w/cpp/keyword/mutable
+
+**Do**
+- Create lazy cache race; fix with mutex and with atomic only when invariant allows.
+
+**Videos**
+- `const Does NOT Mean Thread Safe`
+- `mutable, Caches and the Hidden Data Race`
+
+**Mastery check**
+Explain logical constness and why multiple atomics may fail to preserve an invariant.
+
+## Unit 035 — Scott Item 17: Understand special member generation
+
+**Read**
+- Scott Item 17.
+- Rule of three/five/zero page.
+
+**Do**
+- Expand Unit 012 trait matrix to bases/members that suppress/delete operations.
+
+**Videos**
+- `Exactly When C++ Generates Copy and Move Operations`
+- `The Special-Member Matrix Every C++ Interviewer Loves`
+
+**Mastery check**
+Predict declaration/deletion for complex classes.
+
+## Unit 036 — Scott Item 18: Use unique_ptr for exclusive ownership
+
+**Read**
+- Scott Item 18.
+- `unique_ptr` — https://en.cppreference.com/w/cpp/memory/unique_ptr
+
+**Do**
+- Implement educational `UniquePtr<T>` with move/reset/release/get/custom deleter basics.
+- Test array and incomplete-type/PImpl cases.
+
+**Videos**
+- `unique_ptr Internals: Ownership Without Garbage Collection`
+- `I Built unique_ptr From Scratch`
+- `Custom Deleters Can Change unique_ptr's Size`
+
+**Mastery check**
+Design exclusive-ownership APIs without raw-owning pointers.
+
+## Unit 037 — Scott Item 19: Use shared_ptr for shared ownership
+
+**Read**
+- Scott Item 19.
+- `shared_ptr` — https://en.cppreference.com/w/cpp/memory/shared_ptr
+
+**Do**
+- Implement simplified control block/ref count.
+- Explore custom deleter, aliasing constructor, `enable_shared_from_this` concept, thread-safety scope.
+
+**Videos**
+- `shared_ptr Control Block: What Actually Gets Allocated?`
+- `I Built Reference Counting—and Found the Costs`
+- `shared_ptr Thread Safety Is Easy to Misunderstand`
+
+**Mastery check**
+Separate object thread safety from control-block reference-count safety.
+
+## Unit 038 — Scott Item 20: Use weak_ptr for potentially dangling shared observations
+
+**Read**
+- Scott Item 20.
+- `weak_ptr` — https://en.cppreference.com/w/cpp/memory/weak_ptr
+
+**Do**
+- Build a shared_ptr cycle and break it; test expiration/lock.
+
+**Videos**
+- `The shared_ptr Cycle That Leaks Forever`
+- `weak_ptr: Non-Owning Access Without a Dangling Raw Pointer`
+
+**Mastery check**
+Draw ownership graph and identify where weak ownership belongs.
+
+## Unit 039 — Scott Item 21: Prefer make_unique/make_shared
+
+**Read**
+- Scott Item 21.
+- `make_unique`, `make_shared` cppreference pages.
+
+**Do**
+- Instrument allocation count; show co-allocation and weak-retention trade-off.
+
+**Videos**
+- `make_shared Really Can Use One Allocation`
+- `The make_shared Trade-Off Nobody Mentions`
+
+**Mastery check**
+State when factory helpers are preferable and when direct construction is justified.
+
+## Unit 040 — Scott Item 22: PImpl with smart pointers
+
+**Read**
+- Scott Item 22.
+- Incomplete types — https://en.cppreference.com/w/cpp/language/type#Incomplete_type
+
+**Do**
+- Build a small PImpl library; place destructor/move definitions out of line; change private layout without touching public header.
+
+**Videos**
+- `PImpl: How C++ Hides Implementation and Protects ABI`
+- `Why unique_ptr to an Incomplete Type Can Fail at Destruction`
+
+**Mastery check**
+Explain compile-time dependency, complete-type requirement and ABI motivation.
+
+## Unit 041 — Scott Item 23: Understand std::move and std::forward
+
+**Read**
+- Scott Item 23.
+- `std::move` — https://en.cppreference.com/w/cpp/utility/move
+- `std::forward` — https://en.cppreference.com/w/cpp/utility/forward
+
+**Do**
+- Instrument copies/moves; test moving from const; prove utilities are casts.
+
+**Videos**
+- `std::move Does NOT Move Anything`
+- `Why std::move(const T) Usually Copies`
+
+**Mastery check**
+Explain exactly what each utility returns and when an actual move operation occurs.
+
+## Unit 042 — Scott Item 24: Distinguish forwarding references from rvalue references
+
+**Read**
+- Scott Item 24.
+- Reference page + template deduction page.
+
+**Do**
+- Build matrix of `T&&`, `const T&&`, class-template `T&&`, `auto&&`, generic lambda `auto&&`.
+
+**Videos**
+- `T&& Is Not Always an Rvalue Reference`
+- `Forwarding References: The Exact Rule`
+
+**Mastery check**
+Identify forwarding references purely from declaration context.
+
+## Unit 043 — Scott Item 25: Use move on rvalue refs, forward on forwarding refs
+
+**Read**
+- Scott Item 25.
+
+**Do**
+- Named rvalue-reference experiments; last-use/multiple-forward cases; show explicit move harming NRVO.
+
+**Videos**
+- `Named Rvalue References Are Lvalues`
+- `The std::move That Disabled Copy Elision`
+
+**Mastery check**
+Place move/forward correctly in a wrapper and justify every use.
+
+## Unit 044 — Scott Item 26: Avoid overloading on forwarding references
+
+**Read**
+- Scott Item 26.
+
+**Do**
+- Reproduce greedy overload, forwarding constructor hijacking and derived/base surprises.
+
+**Videos**
+- `The Perfect-Forwarding Constructor That Hijacked Copy Construction`
+- `Why T&& Overloads Are Too Greedy`
+
+**Mastery check**
+Spot forwarding-overload hazards in code review.
+
+## Unit 045 — Scott Item 27: Alternatives to forwarding-reference overloads
+
+**Read**
+- Scott Item 27.
+- `enable_if` — https://en.cppreference.com/w/cpp/types/enable_if
+- Concepts later in Unit 103+.
+
+**Do**
+- Implement same API using separate names, const-ref, by-value, tag dispatch and constraints.
+
+**Videos**
+- `Five Alternatives to a Dangerous T&& Overload`
+- `Tag Dispatch to Concepts: Constraining Generic APIs`
+
+**Mastery check**
+Choose an alternative based on API semantics, not cleverness.
+
+## Unit 046 — Scott Item 28: Understand reference collapsing
+
+**Read**
+- Scott Item 28.
+- Reference collapsing section on reference page.
+
+**Do**
+- Build all collapse combinations via aliases, deduction and decltype.
+
+**Videos**
+- `Reference Collapsing in One Table—and Why It Exists`
+- `How Reference Collapsing Makes Perfect Forwarding Possible`
+
+**Mastery check**
+Derive all cases without memorized code snippets.
+
+## Unit 047 — Scott Item 29: Assume move may not exist, be cheap, or be used
+
+**Read**
+- Scott Item 29.
+
+**Do**
+- Benchmark small/trivial, SSO string, vector, array, const objects and throwing move types.
+
+**Videos**
+- `Move Semantics Is Not Automatically Faster`
+- `I Benchmarked Copy vs Move Across Five C++ Types`
+
+**Mastery check**
+Explain why a specific “move” path may copy or offer little benefit.
+
+## Unit 048 — Scott Item 30: Perfect-forwarding failure cases
+
+**Read**
+- Scott Item 30.
+
+**Do**
+- Reproduce braced initializer, null constant, overloaded function/template, bit-field and static-const historical cases.
+
+**Videos**
+- `Perfect Forwarding Is Not Perfect: Every Major Failure Case`
+- `Why You Can't Perfect-Forward a Bit-Field`
+
+**Mastery check**
+Diagnose the failure and propose the cleanest workaround.
+
+## Unit 049 — Scott Item 31: Avoid default lambda capture modes
+
+**Read**
+- Scott Item 31.
+- Lambda expressions — https://en.cppreference.com/w/cpp/language/lambda
+
+**Do**
+- Create dangling `this` and stale-capture examples; compare explicit capture.
+
+**Videos**
+- `[=] and [&] Can Hide Lifetime Bugs`
+- `The Lambda That Outlived this`
+
+**Mastery check**
+Audit closure ownership/lifetime from a capture list.
+
+## Unit 050 — Scott Item 32: Use init capture to move objects into closures
+
+**Read**
+- Scott Item 32.
+- Lambda capture section.
+
+**Do**
+- Capture move-only resource/state; compare ownership before/after capture.
+
+**Videos**
+- `Moving Ownership Into a Lambda`
+- `Init Capture: Lambdas Can Own More Than Copies`
+
+**Mastery check**
+Design callback ownership explicitly.
+
+## Unit 051 — Scott Item 33: Forward auto&& lambda parameters with decltype
+
+**Read**
+- Scott Item 33.
+
+**Do**
+- Generic forwarding lambda with lvalue/rvalue tests and static assertions.
+
+**Videos**
+- `Perfect Forwarding Inside Generic Lambdas`
+- `Why decltype(param) Is the Right Type for std::forward Here`
+
+**Mastery check**
+Write the pattern from memory and explain why it works.
+
+## Unit 052 — Scott Item 34: Prefer lambdas to std::bind
+
+**Read**
+- Scott Item 34.
+- `std::bind` — https://en.cppreference.com/w/cpp/utility/functional/bind
+
+**Do**
+- Implement same callback with bind and lambda; test overload resolution, captures, evaluation and generated code.
+
+**Videos**
+- `std::bind vs Lambda: Why Modern C++ Chose Lambdas`
+- `I Replaced a bind Expression and the Types Became Obvious`
+
+**Mastery check**
+Explain remaining niche use cases without recommending bind by default.
+
+## Unit 053 — Scott Item 35: Prefer task-based to thread-based programming
+
+**Read**
+- Scott Item 35.
+- Futures — https://en.cppreference.com/w/cpp/thread/future
+
+**Do**
+- Compare explicit thread result/exception handling with async/future.
+
+**Videos**
+- `Thread vs Task: What Abstraction Do You Actually Need?`
+- `Returning Values and Exceptions From Asynchronous Work`
+
+**Mastery check**
+State when explicit thread identity/control is genuinely required.
+
+## Unit 054 — Scott Item 36: Specify launch::async when asynchronicity is essential
+
+**Read**
+- Scott Item 36.
+- `std::async` — https://en.cppreference.com/w/cpp/thread/async
+
+**Do**
+- Demonstrate deferred vs async behavior and `wait_for` status.
+
+**Videos**
+- `std::async May Not Be Asynchronous`
+- `launch::deferred vs launch::async: Run It and See`
+
+**Mastery check**
+Explain default policy uncertainty and correctness implications.
+
+## Unit 055 — Scott Item 37: Make std::threads unjoinable on all paths
+
+**Read**
+- Scott Item 37.
+- `std::thread` — https://en.cppreference.com/w/cpp/thread/thread
+
+**Do**
+- Trigger termination from joinable thread destructor; build RAII wrapper; compare later with jthread.
+
+**Videos**
+- `Destroying a Joinable std::thread Calls terminate`
+- `RAII for Threads: Making Every Exit Path Safe`
+
+**Mastery check**
+Handle exceptions/early returns without leaking thread lifecycle.
+
+## Unit 056 — Scott Item 38: Varying thread-handle destructor behavior
+
+**Read**
+- Scott Item 38.
+- Re-read `std::async` and future destructor notes.
+
+**Do**
+- Compare destructor behavior of thread and futures from different sources.
+
+**Videos**
+- `Why std::thread and std::future Destructors Behave Differently`
+- `The Future Destructor That Can Wait`
+
+**Mastery check**
+Never assume a generic “async handle” destruction policy.
+
+## Unit 057 — Scott Item 39: void futures for one-shot event communication
+
+**Read**
+- Scott Item 39.
+- `promise`, `future`, `shared_future` cppreference pages.
+
+**Do**
+- Implement one-shot signal with promise/future and condition variable; compare semantics.
+
+**Videos**
+- `One-Shot Thread Signaling With promise<void>`
+- `Condition Variable vs Future: Same Goal, Different Semantics`
+
+**Mastery check**
+Choose primitive based on one-shot/repeated state and ownership.
+
+## Unit 058 — Scott Item 40: atomic for concurrency, volatile for special memory
+
+**Read**
+- Scott Item 40.
+- `volatile` — https://en.cppreference.com/w/cpp/language/cv
+- `std::atomic` — https://en.cppreference.com/w/cpp/atomic/atomic
+
+**Do**
+- Data race with volatile counter; compare atomic. Do not yet deep-dive memory ordering—that is Curriculum 02.
+
+**Videos**
+- `volatile Is NOT a Thread-Safety Keyword`
+- `Atomic vs volatile: Two Completely Different Problems`
+
+**Mastery check**
+Explain exactly what volatile does not provide.
+
+## Unit 059 — Scott Item 41: Consider pass by value for cheap-to-move, always-copied parameters
+
+**Read**
+- Scott Item 41.
+
+**Do**
+- Compare const-ref + copy, overload pair, and by-value + move for lvalue/rvalue callers; count operations.
+
+**Videos**
+- `Pass by Value vs const& vs T&&: Count the Operations`
+- `When “Take by Value and Move” Is Actually Good API Design`
+
+**Mastery check**
+State conditions under which the technique is beneficial and when it is not.
+
+## Unit 060 — Scott Item 42: Consider emplacement instead of insertion
+
+**Read**
+- Scott Item 42.
+- Vector `emplace_back` / `push_back` cppreference pages.
+
+**Do**
+- Count constructions; test explicit constructors and resource ownership hazards.
+
+**Videos**
+- `emplace_back Is Not Always Faster Than push_back`
+- `The Explicit Constructor emplace Can Call but push Cannot`
+
+**Mastery check**
+Choose emplacement based on construction semantics, not style folklore.
+
+### Scott gate
+
+Before Unit 061:
+- Answer at least **3 interview questions for every Scott item**.
+- Do a closed-book 90-minute review of Items 1–42.
+- Any item that cannot be explained at senior depth is repeated.
 
 ---
 
-## 2.4 Pointers, references and indirection
+# Stage 2 — Move semantics beyond Scott
 
-- [ ] Object pointers.
-- [ ] Function pointers.
-- [ ] Pointer-to-member data.
-- [ ] Pointer-to-member functions.
-- [ ] Null pointer value.
-- [ ] Pointer arithmetic rules.
-- [ ] One-past-the-end rule.
-- [ ] Array-to-pointer decay.
-- [ ] Function-to-pointer decay.
-- [ ] Lvalue references.
-- [ ] Rvalue references.
-- [ ] Reference binding rules.
-- [ ] References are not reseatable.
-- [ ] Reference lifetime vs referred-object lifetime.
-- [ ] `const` pointer vs pointer-to-const.
-- [ ] Top-level vs low-level cv qualification.
-- [ ] `volatile` meaning and its limitations.
-- [ ] `std::addressof` awareness.
-- [ ] `std::reference_wrapper`.
-- [ ] `std::span` later as non-owning contiguous view.
+> Primary source: Nicolai Josuttis, *C++ Move Semantics — The Complete Guide*. Read the named topic(s) from the book's table of contents in order.
 
-### Gate
+## Unit 061 — Move motivation, rvalue refs, std::move, members
 
-Given 30 declaration puzzles, read them correctly and identify mutability, ownership and lifetime.
+**Read**
+- Josuttis topics: `Motivation of move semantics`, `Performance benefits`, `Rvalue references`, `std::move()`, `std::move() for members and member functions`.
 
----
+**Do**
+- Rebuild tracked-resource examples from scratch.
 
-## 2.5 Expressions, sequencing and value categories
+**Videos**
+- `Move Semantics From Resource Ownership First Principles`
+- `Moving Members Correctly in Real Classes`
 
-- [ ] lvalue.
-- [ ] xvalue.
-- [ ] prvalue.
-- [ ] glvalue.
-- [ ] temporary materialization awareness.
-- [ ] discarded-value expressions.
-- [ ] implicit conversions.
-- [ ] lvalue-to-rvalue conversion.
-- [ ] qualification conversion.
-- [ ] integral/floating conversions.
-- [ ] standard conversion sequences at a practical level.
-- [ ] user-defined conversions.
-- [ ] `explicit` constructors.
-- [ ] conversion operators.
-- [ ] contextual conversion to `bool`.
-- [ ] sequencing vs order of evaluation.
-- [ ] unsequenced modification hazards.
-- [ ] comma operator vs comma separator.
-- [ ] short-circuit evaluation.
-- [ ] conditional operator value-category behavior awareness.
+**Gate**
+Explain the resource-transfer model without using “rvalues are temporary” as the whole explanation.
 
----
+## Unit 062 — Self-move, overload resolution, xvalues and decltype
 
-## 2.6 Functions and overload resolution
+**Read**
+- Josuttis: `Self-move`, `Overload resolution with move semantics`, `Value categories and xvalues`, `decltype with expressions`.
 
-- [ ] Declarations and definitions.
-- [ ] Parameter passing by value/reference/pointer.
-- [ ] Default arguments.
-- [ ] Function overloading.
-- [ ] Standard conversion ranking at a practical level.
-- [ ] User-defined conversions in overload resolution.
-- [ ] Deleted candidates still participate in overload resolution.
-- [ ] Template vs non-template overloads.
-- [ ] Function template specialization pitfalls.
-- [ ] `const` member functions.
-- [ ] cv-qualified member functions.
-- [ ] ref-qualified member functions (`&`, `&&`).
-- [ ] `static` member functions.
-- [ ] `noexcept` in function types/version implications.
-- [ ] Return by value/reference/pointer.
-- [ ] Returning references safely.
-- [ ] `[[nodiscard]]` later.
-- [ ] Variadic C-style functions only as legacy awareness; prefer variadic templates.
-- [ ] Recursive calls and tail-call optimization as non-guaranteed implementation detail.
+**Do**
+- Self-move-assignment torture tests; overload sets with copy/move/const&&.
 
-### Lab
+**Videos**
+- `Self Move Assignment: Must Your Type Survive x = std::move(x)?`
+- `Move Overload Resolution Under the Microscope`
 
-Build deliberately ambiguous overload sets and explain every viable candidate and ranking.
+**Gate**
+Reason about self-move safety and overload selection.
 
----
+## Unit 063 — Rule of five/three, move-aware member initialization and ref qualifiers
 
-## 2.7 Classes and object model
+**Read**
+- Josuttis: `Rule of five or three`, `How to initialize members with move semantics`, `Overloading on reference qualifiers`, `The return type of getters`.
 
-- [ ] Class vs struct default access/inheritance difference only.
-- [ ] Access control.
-- [ ] Data members.
-- [ ] Static data members.
-- [ ] Member functions.
-- [ ] Nested types.
-- [ ] Friends.
-- [ ] Constructors.
-- [ ] Delegating constructors.
-- [ ] Converting constructors.
-- [ ] `explicit` constructors.
-- [ ] Destructor.
-- [ ] Copy constructor/assignment.
-- [ ] Move constructor/assignment.
-- [ ] Member initialization order.
-- [ ] Object slicing.
-- [ ] Empty Base Optimization awareness.
-- [ ] `[[no_unique_address]]` later.
-- [ ] Empty class size.
-- [ ] Alignment/padding.
-- [ ] `this` pointer.
-- [ ] `mutable`.
-- [ ] `static` members.
-- [ ] Nested/local classes awareness.
-- [ ] Bit-fields and their restrictions.
+**Do**
+- Design ref-qualified getters (`&`, `const&`, `&&`) and test lifetime consequences.
 
----
+**Videos**
+- `Ref-Qualified Member Functions: Different APIs for lvalues and rvalues`
+- `Your Getter May Return a Dangling Reference From a Temporary`
 
-## 2.8 Inheritance and runtime polymorphism
+**Gate**
+Design getter return types for owned/view data safely.
 
-- [ ] Public/protected/private inheritance semantics.
-- [ ] Is-a vs implementation reuse.
-- [ ] Virtual functions.
-- [ ] Pure virtual functions.
-- [ ] Abstract classes.
-- [ ] Virtual destructor rule.
-- [ ] Override/final.
-- [ ] Covariant return types awareness.
-- [ ] Dynamic dispatch.
-- [ ] Dispatch during construction/destruction.
-- [ ] Multiple inheritance basics.
-- [ ] Virtual inheritance and diamond problem awareness.
-- [ ] Object layout/vptr/vtable as implementation model, not standard guarantee.
-- [ ] RTTI.
-- [ ] `dynamic_cast`.
-- [ ] `typeid`.
-- [ ] Slicing and polymorphic copying problem.
-- [ ] NVI (Non-Virtual Interface) pattern awareness.
+## Unit 064 — Move in polymorphic hierarchies and const rvalues
 
-### Lab
+**Read**
+- Josuttis: `Move semantics in polymorphic class hierarchies`, `const rvalue references (const&&)`.
 
-Inspect a small hierarchy in memory and assembly while clearly labeling ABI-specific observations as implementation details.
+**Do**
+- Base/derived move/copy matrix; show slicing and virtual-clone alternatives.
+
+**Videos**
+- `Move Semantics Meets Polymorphism`
+- `const T&& Exists—But When Is It Useful?`
+
+**Gate**
+Explain why polymorphic/value semantics need deliberate design.
+
+## Unit 065 — Generic move: forwarding, perfect passing, auto&&
+
+**Read**
+- Josuttis generic-code topics through `auto&&`.
+
+**Do**
+- Build forwarding wrapper, forwarding constructor, perfect-pass pipeline.
+
+**Videos**
+- `Perfect Passing: Value Category Across Multiple Layers`
+- `auto&& Beyond Range-for: Universal Reference in Disguise`
+
+**Gate**
+Preserve caller category through two forwarding layers.
+
+## Unit 066 — Perfect returning, decltype(auto), lambdas and range-for
+
+**Read**
+- Josuttis: `Perfect returning`, `decltype(auto)`, `Move semantics in lambdas`, `Move semantics in range-based for loops`.
+
+**Do**
+- Build wrapper returning references/values correctly; test moved elements in ranges.
+
+**Videos**
+- `Perfect Returning: When decltype(auto) Is the Right Tool`
+- `Move Semantics in Range-Based for Loops`
+
+**Gate**
+Avoid dangling/performance mistakes in return forwarding.
+
+## Unit 067 — Move-only standard-library types and move algorithms
+
+**Read**
+- Josuttis standard-library topics: move-only types, streams, threads, unique pointers, moving algorithms, move iterators.
+
+**Do**
+- Move streams/unique_ptrs through containers/algorithms; use move iterators deliberately.
+
+**Videos**
+- `Move Iterators: Turning Copies Into Moves`
+- `Why Some Standard-Library Types Are Move-Only`
+
+**Gate**
+Explain semantic reason for move-only design.
+
+## Unit 068 — Strings, containers, shared_ptr, pair and optional move behavior
+
+**Read**
+- Josuttis remaining standard-library move topics.
+
+**Do**
+- Instrument vector/array/string/shared_ptr/pair/optional moves and allocator-related caveats.
+
+**Videos**
+- `Moving a vector Is Cheap—Until Allocators Change the Rules`
+- `What Does Moving shared_ptr Actually Cost?`
+
+**Gate**
+Never infer move cost solely from syntax.
 
 ---
 
-## 2.9 Lifetime, storage duration and RAII
+# Stage 3 — Templates to interview/library-author depth
 
-- [ ] Automatic storage duration.
-- [ ] Static storage duration.
-- [ ] Thread storage duration.
-- [ ] Dynamic storage duration.
-- [ ] Object lifetime beginning.
-- [ ] Object lifetime ending.
-- [ ] Temporary lifetime.
-- [ ] Lifetime extension by references.
-- [ ] Cases where lifetime is **not** extended.
-- [ ] Dangling pointer/reference.
-- [ ] Use-after-free.
-- [ ] Use-after-scope.
-- [ ] Placement new.
-- [ ] Explicit destructor call awareness.
-- [ ] Reuse of storage.
-- [ ] `std::launder` concept and rare use case.
-- [ ] Destruction order.
-- [ ] RAII.
-- [ ] Ownership vs observation.
-- [ ] Resource handles other than memory: fd, mutex, socket, file, GPU handle later.
+> Primary source: Vandevoorde/Josuttis/Gregor, *C++ Templates: The Complete Guide, 2nd Edition*.
 
-### Lab
+## Unit 069 — Function templates
 
-Create a lifetime “bug zoo” and detect issues with ASan/UBSan where applicable.
+**Read**
+- Templates 2e Chapter 1: sections 1.1–1.7.
 
----
+**Do**
+- Generic max-like functions, multiple parameters, defaults, overloads.
 
-## 2.10 Memory management fundamentals
+**Videos**
+- `Function Templates From Definition to Overload Resolution`
+- `Why Two Function Templates Become Ambiguous`
 
-- [ ] `new` expression vs allocation function `operator new`.
-- [ ] `delete` expression vs `operator delete`.
-- [ ] Array new/delete.
-- [ ] Placement new.
-- [ ] Matching allocation/deallocation.
-- [ ] Custom `operator new/delete` awareness.
-- [ ] Alignment-aware allocation awareness.
-- [ ] `std::bad_alloc`.
-- [ ] `new (std::nothrow)` awareness.
-- [ ] Raw ownership as a smell in modern interfaces.
-- [ ] Smart pointers later in Scott.
-- [ ] Allocator model later in STL section.
-- [ ] Arena/pool allocators later in performance curriculum, but language/API concepts begin here.
+**Gate**
+Explain deduction vs explicit template arguments and overload interaction.
 
----
+## Unit 070 — Class templates, specialization, aliases and CTAD
 
-## 2.11 Exceptions and error safety
+**Read**
+- Chapter 2: sections 2.1–2.11.
 
-- [ ] `throw`, `try`, `catch`.
-- [ ] Stack unwinding.
-- [ ] Catch by value vs reference.
-- [ ] `throw;` rethrow.
-- [ ] Exception object lifetime.
-- [ ] Destructors during unwinding.
-- [ ] Destructors should generally not emit exceptions.
-- [ ] `std::terminate` scenarios.
-- [ ] `noexcept` and conditional `noexcept`.
-- [ ] Basic guarantee.
-- [ ] Strong guarantee.
-- [ ] No-throw guarantee.
-- [ ] Exception-neutral generic code.
-- [ ] RAII as exception-safety foundation.
-- [ ] Copy-and-swap as an educational pattern, not automatic default.
-- [ ] Exceptions vs error codes vs `optional`/`expected` (modern sections later).
+**Do**
+- Build Stack<T>, full/partial specialization, alias and deduction guide.
 
----
+**Videos**
+- `Class Templates: Specialization, Partial Specialization and CTAD`
+- `I Built a Deduction Guide the Compiler Couldn't Invent`
 
-## 2.12 Casts and type conversions
+**Gate**
+Know what can/cannot be partially specialized.
 
-- [ ] `static_cast`.
-- [ ] `dynamic_cast`.
-- [ ] `const_cast`.
-- [ ] `reinterpret_cast`.
-- [ ] C-style cast decomposition and why it hides intent.
-- [ ] Numeric narrowing.
-- [ ] Pointer conversions.
-- [ ] Base/derived conversions.
-- [ ] `std::bit_cast` later as safe bitwise representation conversion for suitable types.
-- [ ] Strict aliasing/type-access rules at awareness level; performance curriculum will deepen.
+## Unit 071 — Non-type template parameters
 
----
+**Read**
+- Chapter 3.
 
-## 2.13 Undefined, unspecified and implementation-defined behavior
+**Do**
+- Fixed-size buffer/policy examples using integral and `auto` NTTPs; later compare C++20 expanded NTTP support.
 
-- [ ] Difference between undefined behavior, unspecified behavior and implementation-defined behavior.
-- [ ] Signed integer overflow.
-- [ ] Invalid shifts.
-- [ ] Out-of-bounds access.
-- [ ] Use-after-lifetime.
-- [ ] Dangling references/views.
-- [ ] Uninitialized reads.
-- [ ] Null dereference.
-- [ ] Invalid downcast.
-- [ ] Double delete.
-- [ ] Mismatched allocation/deallocation.
-- [ ] Data races (deep later).
-- [ ] Invalidated iterators.
-- [ ] Misaligned access.
-- [ ] `reinterpret_cast` abuse.
-- [ ] Modifying truly const objects through `const_cast`.
-- [ ] Sequence/order hazards.
-- [ ] Why “it works with -O0” proves nothing.
+**Videos**
+- `Non-Type Template Parameters: Values as Types' Compile-Time Partners`
+- `auto as a Template Parameter`
 
----
+**Gate**
+Choose type vs non-type parameter correctly.
 
-# 3. Scott Meyers audit — all 42 items, individually mandatory
+## Unit 072 — Variadic templates and fold expressions
 
-The item list below is a **coverage checklist**. Every item gets its own mastery unit. Some items naturally require multiple labs and multiple videos.
+**Read**
+- Chapter 4.
 
-## Block A — Type Deduction
+**Do**
+- Variadic logger, tuple-like processing, left/right fold experiments.
 
-### Item 1 — Understand template type deduction
+**Videos**
+- `Variadic Templates Without Recursive Boilerplate`
+- `Fold Expressions: Left Fold vs Right Fold Visualized`
 
-- [ ] `ParamType = T` by value.
-- [ ] `ParamType = T&`.
-- [ ] `ParamType = const T&`.
-- [ ] Pointer parameters.
-- [ ] Forwarding-reference case `T&&` with deduction.
-- [ ] Reference stripping during deduction.
-- [ ] Top-level cv dropping for by-value parameters.
-- [ ] Low-level cv preservation through pointers/references.
-- [ ] Array-to-pointer decay for by-value parameters.
-- [ ] Array extent preservation through reference parameters.
-- [ ] Function-to-pointer decay for by-value parameters.
-- [ ] Function type preservation through references.
-- [ ] Predict both deduced `T` **and** final parameter type.
+**Gate**
+Expand packs correctly and predict fold associativity.
 
-**Required lab:** 100-case `static_assert(std::is_same_v<...>)` deduction matrix.
+## Unit 073 — Tricky template basics
 
-### Item 2 — Understand `auto` type deduction
+**Read**
+- Chapter 5, all sections: `typename`, zero initialization, `this->`, arrays/string literals, member templates, variable templates, template-template parameters.
 
-- [ ] Relationship to template deduction.
-- [ ] `auto` by value.
-- [ ] `auto&`.
-- [ ] `const auto&`.
-- [ ] `auto&&` and forwarding-reference behavior.
-- [ ] Top-level cv dropping.
-- [ ] Array/function decay.
-- [ ] Brace-initializer special case.
-- [ ] Difference between `auto x = {1,2}` and template deduction from braced init.
-- [ ] Modern interactions with structured bindings later.
+**Do**
+- Create one minimal failing/fixed case for every section.
 
-### Item 3 — Understand `decltype`
+**Videos**
+- `Why Templates Need typename and this->`
+- `Template-Template Parameters Without Fear`
 
-- [ ] Unparenthesized id-expression/member-access special rule.
-- [ ] General expression rule.
-- [ ] lvalue → `T&`.
-- [ ] xvalue → `T&&`.
-- [ ] prvalue → `T`.
-- [ ] `decltype(x)` vs `decltype((x))`.
-- [ ] `decltype(auto)` motivation.
-- [ ] Return-type preservation.
-- [ ] Parentheses changing return type and potentially creating dangling references.
+**Gate**
+Explain dependent names and two-phase lookup motivation at a practical level.
 
-### Item 4 — Know how to view deduced types
+## Unit 074 — Perfect forwarding and enable_if
 
-- [ ] IDE display.
-- [ ] Compiler diagnostic trick.
-- [ ] `static_assert`/traits.
-- [ ] Runtime type-name limitations.
-- [ ] Name mangling/demangling awareness.
-- [ ] Why `typeid(T).name()` may lose cv/ref information depending on usage.
+**Read**
+- Chapter 6.
 
-**Block gate:** 100 mixed deduction questions, >=90% closed-book.
+**Do**
+- Special member function template hazards; enable/disable overloads with enable_if.
 
----
+**Videos**
+- `enable_if Before Concepts: How SFINAE Shaped Modern C++`
+- `A Templated Constructor Can Break Your Copy Constructor`
 
-## Block B — `auto`
+**Gate**
+Read legacy SFINAE code confidently.
 
-### Item 5 — Prefer `auto` to explicit type declarations
+## Unit 075 — By value or by reference in templates
 
-- [ ] Avoid uninitialized variables.
-- [ ] Iterator verbosity.
-- [ ] Closure types cannot be named directly.
-- [ ] Correct type when APIs change.
-- [ ] Accidental conversion from wrong explicit type.
-- [ ] `unordered_map` key is `const Key` in `value_type` — iteration-copy trap.
-- [ ] Readability trade-off.
-- [ ] When explicit type better communicates semantics.
+**Read**
+- Chapter 7.
 
-### Item 6 — Use the explicitly typed initializer idiom when `auto` deduces undesired types
+**Do**
+- Arrays/string literals, `std::ref`, return-value and recommended parameter declaration experiments.
 
-- [ ] Proxy types.
-- [ ] `std::vector<bool>::reference` classic example.
-- [ ] Expression-template/proxy concept.
-- [ ] Hidden/lazy conversion.
-- [ ] Lifetime of proxy operands.
-- [ ] Forcing materialization with an explicit target type.
-- [ ] Recognizing APIs that return proxy objects intentionally.
+**Videos**
+- `Generic APIs: T, T&, const T&, T&&—Choose Deliberately`
+- `std::ref and Why References Aren't Normal Values`
 
-**Required lab:** build a tiny proxy type that becomes dangerous when captured by `auto`.
+**Gate**
+Design generic function parameter forms from semantics.
 
----
+## Unit 076 — Compile-time programming, SFINAE and constexpr if
 
-## Block C — Moving to Modern C++
+**Read**
+- Chapter 8.
 
-### Item 7 — Distinguish between `()` and `{}` when creating objects
+**Do**
+- Trait selection, SFINAE detection and `if constexpr` equivalent.
 
-- [ ] Direct initialization with parentheses.
-- [ ] List initialization.
-- [ ] Copy-list initialization.
-- [ ] Narrowing prevention.
-- [ ] Most-vexing parse avoidance.
-- [ ] `std::initializer_list` preferential overload matching.
-- [ ] `vector(size, value)` vs `vector{elements}`.
-- [ ] Constructor resolution surprises.
-- [ ] Empty braces and default construction.
-- [ ] Aggregate interactions.
-- [ ] C++17/20 aggregate evolution later.
+**Videos**
+- `SFINAE: Substitution Failure Is Not an Error, Finally Explained`
+- `if constexpr Replaced Whole Families of Template Tricks`
 
-### Item 8 — Prefer `nullptr` to `0` and `NULL`
+**Gate**
+Explain immediate-context failure and branch discard.
 
-- [ ] `std::nullptr_t`.
-- [ ] Null pointer conversion.
-- [ ] Integral overload ambiguity.
-- [ ] Template deduction differences.
-- [ ] Generic forwarding behavior.
-- [ ] Boolean-context behavior.
+## Unit 077 — Templates in practice and terminology
 
-### Item 9 — Prefer alias declarations to `typedef`s
+**Read**
+- Chapters 9 and 10.
 
-- [ ] `using Name = Type`.
-- [ ] Readability for function pointers.
-- [ ] Alias templates.
-- [ ] Dependent types.
-- [ ] Interaction with traits and `_t` aliases.
-- [ ] Why alias templates simplify metaprogramming.
+**Do**
+- Inclusion model, inline/templates, error decoding, substitution vs instantiation vs specialization.
 
-### Item 10 — Prefer scoped enums to unscoped enums
+**Videos**
+- `Why Template Definitions Usually Live in Headers`
+- `Substitution vs Instantiation vs Specialization`
 
-- [ ] Name pollution.
-- [ ] Implicit conversion to integral types.
-- [ ] Explicit conversion when needed.
-- [ ] Underlying type.
-- [ ] Forward declaration.
-- [ ] ABI/serialization caution around underlying representation.
-- [ ] `std::to_underlying` later (C++23).
+**Gate**
+Use terminology precisely in interview explanations.
 
-### Item 11 — Prefer deleted functions to private undefined ones
+## Unit 078 — Generic libraries and callable machinery
 
-- [ ] `= delete` gives compile-time diagnostics.
-- [ ] Deleting copy/move operations.
-- [ ] Deleting dangerous overloads.
-- [ ] Access checking vs deleted-function diagnosis.
-- [ ] Deleted template specializations/overloads.
-- [ ] Deleted candidates still participate in overload resolution.
+**Read**
+- Chapter 11.
 
-### Item 12 — Declare overriding functions `override`
+**Do**
+- Generic callable wrapper using `std::invoke`; reference template parameter traps; deferred evaluation.
 
-- [ ] Signature mismatch.
-- [ ] Missing `const`.
-- [ ] Reference qualifiers.
-- [ ] Parameter type mismatch.
-- [ ] Base function renamed/changed.
-- [ ] `override` catches errors.
-- [ ] `final` awareness.
-- [ ] `virtual` + `override` style discussion.
+**Videos**
+- `What Counts as Callable in Modern C++?`
+- `std::invoke: One Interface for Functions, Members and Functors`
 
-### Item 13 — Prefer `const_iterator`s to `iterator`s
+**Gate**
+Write generic callable code that preserves semantics.
 
-- [ ] Mutation intent.
-- [ ] `cbegin`/`cend`.
-- [ ] Generic algorithm interaction.
-- [ ] Insertion/erase positions using const_iterator where supported.
-- [ ] Historical C++98 limitations vs modern library.
+## Unit 079 — Template parameters, names and lookup in depth
 
-### Item 14 — Declare functions `noexcept` if they will not emit exceptions
+**Read**
+- Chapters 12 and 13.
 
-- [ ] `noexcept` as contract.
-- [ ] Termination on escaping exception.
-- [ ] Conditional `noexcept`.
-- [ ] `noexcept(expression)` operator.
-- [ ] Move constructors and containers.
-- [ ] `std::move_if_noexcept`.
-- [ ] Function-type implications in newer standards.
-- [ ] Do not mark `noexcept` casually when dependencies may throw.
+**Do**
+- Dependent/nondependent names, lookup timing, inheritance from dependent base.
 
-**Required lab:** vector relocation with throwing vs `noexcept` move.
+**Videos**
+- `Two-Phase Lookup: Why Template Errors Appear “Late”`
+- `Dependent Base Classes and the this-> Mystery`
 
-### Item 15 — Use `constexpr` whenever possible
+**Gate**
+Predict whether lookup happens at definition or instantiation.
 
-- [ ] `constexpr` objects.
-- [ ] `constexpr` functions.
-- [ ] Compile-time eligibility vs guarantee of compile-time evaluation.
-- [ ] Literal types.
-- [ ] Version-by-version relaxation.
-- [ ] `consteval`/`constinit` later.
-- [ ] Compile-time validation.
-- [ ] Performance is not the only motivation; stronger invariants/API capability matter.
+## Unit 080 — Instantiation model and explicit instantiation
 
-### Item 16 — Make `const` member functions thread safe
+**Read**
+- Chapter 14.
 
-- [ ] Logical vs bitwise constness.
-- [ ] `mutable` synchronization members.
-- [ ] Lazy caching.
-- [ ] Data races despite `const`.
-- [ ] Mutex solution.
-- [ ] Atomic solution when semantics permit.
-- [ ] Multiple fields/invariants requiring a lock rather than independent atomics.
+**Do**
+- On-demand/lazy instantiation and explicit-instantiation builds across translation units.
 
-### Item 17 — Understand special member function generation
+**Videos**
+- `When Does a C++ Template Actually Get Instantiated?`
+- `Explicit Instantiation to Control Build Times and Symbols`
 
-- [ ] Default constructor generation conditions.
-- [ ] Destructor generation.
-- [ ] Copy constructor generation/deletion.
-- [ ] Copy assignment generation/deletion.
-- [ ] Move constructor generation/suppression/deletion.
-- [ ] Move assignment generation/suppression/deletion.
-- [ ] User-declared destructor suppressing implicit moves in classic rules.
-- [ ] Member/base type effects.
-- [ ] `= default`.
-- [ ] `= delete`.
-- [ ] Triviality.
-- [ ] Rule of Zero.
-- [ ] Rule of Five.
-- [ ] Polymorphic base-class special-member considerations.
+**Gate**
+Explain instantiation model and practical build impact.
 
-**Required lab:** matrix of classes with `std::is_*constructible/assignable` traits.
+## Unit 081 — Template deduction in depth
+
+**Read**
+- Chapter 15, sections 15.1–15.12.
+
+**Do**
+- Special deduction situations, initializer lists, packs, rvalue refs, SFINAE limitations, CTAD.
+
+**Videos**
+- `Template Deduction: The Deep Version Scott Couldn't Fit in One Item`
+- `Non-Deduced Contexts: Why the Compiler Stops Guessing`
+
+**Gate**
+Solve advanced deduction cases beyond Scott Item 1.
+
+## Unit 082 — Specialization and overloading in depth
+
+**Read**
+- Chapter 16.
+
+**Do**
+- Function overload vs explicit specialization; partial class/variable specialization.
+
+**Videos**
+- `Overload or Specialize? C++ Templates Have Different Rules`
+- `Why Function Templates Cannot Be Partially Specialized`
+
+**Gate**
+Choose specialization/overload mechanism correctly.
+
+## Unit 083 — Static polymorphism, traits, tag dispatch, CRTP and type erasure
+
+**Read**
+- Chapters 18–22, focusing on dynamic vs static polymorphism, traits/policies, tag dispatch, enabling/disabling, EBCO, CRTP, mixins, type erasure and performance considerations.
+
+**Do**
+- Implement the same Strategy interface via virtual functions, CRTP, `std::function`/type erasure and concepts later; benchmark carefully.
+
+**Videos**
+- `Virtual vs CRTP vs Type Erasure: Four Kinds of Polymorphism`
+- `CRTP: Static Polymorphism Without Virtual Dispatch`
+- `Type Erasure: How std::function Hides Concrete Types`
+
+**Gate**
+Choose a polymorphism model based on ABI, extensibility, compile time and runtime trade-offs.
+
+## Unit 084 — Metaprogramming, typelists, tuples, variants and template debugging
+
+**Read**
+- Chapters 23–28 selectively but completely enough to understand each technique and its costs.
+
+**Do**
+- Build a small typelist algorithm, tuple recursion/pack expansion, mini discriminated-union concept, expression-template toy and template diagnostics lab.
+
+**Videos**
+- `Template Metaprogramming: What Is Still Worth Knowing in Modern C++?`
+- `How variant Works Conceptually: Storage, Active Alternative, Visitor`
+- `Debugging Template Errors Without Reading a 200-Line Error Novel`
+
+**Gate**
+Read unfamiliar metaprogramming and simplify it mentally into modern alternatives.
 
 ---
 
-## Block D — Smart Pointers
+# Stage 4 — Standard library mastery
 
-### Item 18 — Use `std::unique_ptr` for exclusive-ownership resource management
+## Unit 085 — Iterators, iterator categories and invalidation
 
-- [ ] Exclusive ownership.
-- [ ] Move-only semantics.
-- [ ] Default deleter.
-- [ ] Stateful/stateless custom deleters.
-- [ ] `unique_ptr<T, D>` type includes deleter type.
-- [ ] Empty-base/size optimization as implementation technique awareness.
-- [ ] `unique_ptr<T[]>`.
-- [ ] `make_unique`.
-- [ ] Release/reset/swap/get.
-- [ ] Observer access vs ownership transfer.
-- [ ] Passing by value when transferring ownership.
-- [ ] Passing by reference/pointer when borrowing.
-- [ ] Incomplete-type/PImpl considerations.
-- [ ] Converting `unique_ptr<Derived>` to `unique_ptr<Base>` and virtual-destructor implications.
+**Read**
+- Iterator library — https://en.cppreference.com/w/cpp/iterator
+- `iterator_traits` and iterator concepts pages.
 
-**Build:** educational `UniquePtr<T>` supporting move, reset, release and custom deleter basics.
+**Do**
+- Write generic algorithm with category requirements; create invalidation matrix for all containers used later.
 
-### Item 19 — Use `std::shared_ptr` for shared-ownership resource management
+**Videos**
+- `Iterator Categories: What Algorithms Are Allowed to Assume`
+- `Iterator Invalidation: The Table You Need in Your Head`
 
-- [ ] Shared ownership semantics.
-- [ ] Control block.
-- [ ] Strong count.
-- [ ] Weak count awareness.
-- [ ] Object pointer vs control-block pointer conceptual distinction.
-- [ ] Separate allocation vs `make_shared` co-allocation.
-- [ ] Custom deleter stored in control block.
-- [ ] Construction from raw pointer creates control block.
-- [ ] Double-control-block catastrophe from constructing two shared_ptrs from same raw pointer.
-- [ ] `enable_shared_from_this` purpose and misuse.
-- [ ] Aliasing constructor concept.
-- [ ] Atomicity of reference-count operations vs thread safety of pointed object.
-- [ ] Shared ownership cost.
-- [ ] Prefer clear ownership models over “use shared_ptr everywhere”.
+**Gate**
+Predict invalidation after insert/erase/reallocation.
 
-**Build:** simplified reference-counted pointer and inspect allocation/refcount behavior.
+## Unit 086 — vector internals and guarantees
 
-### Item 20 — Use `std::weak_ptr` for `std::shared_ptr`-like pointers that can dangle
+**Read**
+- `std::vector` — https://en.cppreference.com/w/cpp/container/vector
 
-- [ ] Non-owning reference to shared control block.
-- [ ] `expired()`.
-- [ ] `lock()`.
-- [ ] Race-safe acquisition concept through `lock()`.
-- [ ] Breaking ownership cycles.
-- [ ] Cache use case.
-- [ ] Observer-list use case.
-- [ ] Weak-count/control-block lifetime awareness.
+**Do**
+- Implement educational vector with raw storage, placement construction, growth, move_if_noexcept and exception rollback.
 
-### Item 21 — Prefer `std::make_unique` and `std::make_shared` to direct use of `new`
+**Videos**
+- `How std::vector Actually Grows`
+- `I Built vector From Raw Memory`
+- `move_if_noexcept: The Hidden Reason vector Sometimes Copies`
 
-- [ ] Exception-safety motivation.
-- [ ] Reduced repetition.
-- [ ] `make_shared` one-allocation advantage.
-- [ ] `make_shared` object/control-block co-allocation.
-- [ ] Weak references may keep combined allocation alive after object destruction.
-- [ ] Custom deleter limitation.
-- [ ] Private constructor/factory access considerations.
-- [ ] Very large object/allocation trade-offs.
+**Gate**
+Explain size/capacity, invalidation, exception guarantees and relocation.
 
-### Item 22 — When using PImpl, define special member functions in the implementation file
+## Unit 087 — deque, list and forward_list
 
-- [ ] Incomplete type.
-- [ ] Why default deleter needs complete type at destruction point.
-- [ ] Out-of-line destructor.
-- [ ] Move operations with PImpl.
-- [ ] Compile-time dependency reduction.
-- [ ] ABI stability motivation.
-- [ ] Cost of indirection/allocation.
+**Read**
+- https://en.cppreference.com/w/cpp/container/deque
+- https://en.cppreference.com/w/cpp/container/list
+- https://en.cppreference.com/w/cpp/container/forward_list
 
-**Block gate:** Given a nontrivial ownership graph, annotate every edge as owner/observer/shared/borrowed and justify every pointer/reference choice.
+**Do**
+- Benchmark traversal/insertion with controlled workloads; inspect locality.
 
----
+**Videos**
+- `vector vs deque vs list: Big-O Is Not Enough`
+- `Why Linked Lists Often Lose on Modern CPUs`
 
-## Block E — Rvalue References, Move Semantics, Perfect Forwarding
+**Gate**
+Choose sequence container by access/invalidation/locality needs.
 
-### Item 23 — Understand `std::move` and `std::forward`
+## Unit 088 — map/set and ordered associative containers
 
-- [ ] Both are casts/utilities, not moving operations themselves.
-- [ ] `std::move` casts toward rvalue/xvalue category.
-- [ ] Move occurs only if an appropriate overload exists.
-- [ ] Moving from `const` often selects copy because move constructors typically need non-const rvalue.
-- [ ] Moved-from object remains valid but state is generally unspecified unless type documents more.
-- [ ] `std::forward<T>` conditionally preserves original value category.
-- [ ] Misusing forward on non-forwarding contexts.
+**Read**
+- `map`, `set`, `multimap`, `multiset` cppreference pages.
 
-### Item 24 — Distinguish universal/forwarding references from rvalue references
+**Do**
+- Comparator correctness, heterogeneous lookup where supported, node handles.
 
-- [ ] `T&&` with type deduction vs concrete `Type&&`.
-- [ ] `auto&&` deduction contexts.
-- [ ] `const T&&` is not a forwarding reference.
-- [ ] Class-template parameter already known vs function-template deduction.
-- [ ] Reference collapsing behind forwarding references.
-- [ ] Generic lambda `auto&&`.
+**Videos**
+- `std::map: Ordering, Comparators and Tree Costs`
+- `A Bad Comparator Can Break an Associative Container`
 
-### Item 25 — Use `std::move` on rvalue references and `std::forward` on forwarding references
+**Gate**
+Explain strict weak ordering and operation complexity.
 
-- [ ] Named rvalue references are lvalue expressions.
-- [ ] Last-use rule.
-- [ ] Forward exactly when passing onward.
-- [ ] Forward each parameter with its corresponding template type.
-- [ ] Returning by value and why explicit `std::move` can inhibit NRVO.
-- [ ] Moving members from rvalue-qualified functions.
+## Unit 089 — unordered containers, hashing and load factor
 
-### Item 26 — Avoid overloading on forwarding references
+**Read**
+- `unordered_map` / `unordered_set` cppreference pages.
 
-- [ ] Greedy matching.
-- [ ] Lvalue of unexpected type binding better than intended overload.
-- [ ] Forwarding constructor hijacking copy construction.
-- [ ] Derived-to-base surprises.
-- [ ] Overload resolution hazards.
-- [ ] API maintainability cost.
+**Do**
+- Custom hash/equality; reserve/rehash/load-factor experiments; collision stress test.
 
-### Item 27 — Familiarize yourself with alternatives to overloading on forwarding references
+**Videos**
+- `unordered_map Is Not O(1) Magic`
+- `Load Factor, Rehashing and Collision Costs`
 
-- [ ] Abandon overloading / use distinct names.
-- [ ] Pass `const T&`.
-- [ ] Pass by value for copyable/movable types.
-- [ ] Tag dispatch.
-- [ ] Constrain accepted types.
-- [ ] `enable_if`/SFINAE historically.
-- [ ] Concepts/requires in modern C++.
+**Gate**
+Explain average vs worst-case behavior and invalidation.
 
-### Item 28 — Understand reference collapsing
+## Unit 090 — std::string and string lifetime/capacity
 
-- [ ] `& + & -> &`.
-- [ ] `& + && -> &`.
-- [ ] `&& + & -> &`.
-- [ ] `&& + && -> &&`.
-- [ ] Template deduction context.
-- [ ] `auto&&`.
-- [ ] `typedef`/alias contexts.
-- [ ] `decltype` contexts.
-- [ ] Why this enables perfect forwarding.
+**Read**
+- `basic_string` — https://en.cppreference.com/w/cpp/string/basic_string
 
-### Item 29 — Assume move operations are not present, not cheap, and not used
+**Do**
+- Capacity, SSO observation (implementation-specific), iterator/reference invalidation and move/copy experiments.
 
-- [ ] Type may not declare move operations.
-- [ ] Copy may handle rvalues.
-- [ ] `const` blocks typical move overloads.
-- [ ] Small/trivial types may gain nothing.
-- [ ] SSO/string implementation effects.
-- [ ] Containers may move cheaply while elements do not, or vice versa.
-- [ ] `noexcept` may affect container relocation choice.
-- [ ] Copy elision can eliminate both copy and move.
-- [ ] Measure rather than fetishize `std::move`.
+**Videos**
+- `std::string Internals: Capacity, SSO and Invalidation`
+- `Moving a String: When Is It Actually Cheap?`
 
-### Item 30 — Familiarize yourself with perfect-forwarding failure cases
+**Gate**
+Separate standard guarantees from SSO implementation details.
 
-- [ ] Braced initializers.
-- [ ] `0`/`NULL` as null pointer constants.
-- [ ] Declaration-only static const integral members / ODR-era issue awareness.
-- [ ] Overloaded function names.
-- [ ] Function templates as arguments.
-- [ ] Bit-fields cannot bind as ordinary non-const references in the needed way.
-- [ ] API redesign when forwarding cannot represent the call cleanly.
+## Unit 091 — Algorithms, comparators and complexity contracts
 
-## Mandatory Josuttis move-semantics expansion
+**Read**
+- Algorithms library — https://en.cppreference.com/w/cpp/algorithm
 
-Beyond Scott, master:
+**Do**
+- Implement/reimplement selected `lower_bound`, partition, sort usage; custom comparator/projection-like patterns.
 
-- [ ] Motivation and performance model of moves.
-- [ ] Self-move and self-move assignment behavior/design.
-- [ ] Member move initialization.
-- [ ] Move and overload resolution.
-- [ ] xvalues in depth.
-- [ ] `decltype` of expressions in move contexts.
-- [ ] Ref-qualified member functions.
-- [ ] Return type of getters (`T`, `T&`, `const T&`, `T&&`) and lifetime consequences.
-- [ ] Move semantics in polymorphic class hierarchies.
-- [ ] `const&&` and why it is unusual.
-- [ ] “Perfect passing” vs perfect forwarding concepts.
-- [ ] Forwarding references in APIs that are not actually forwarding.
-- [ ] Perfect returning / `decltype(auto)`.
-- [ ] Move semantics in lambdas.
-- [ ] Move semantics in range-based for.
-- [ ] Move-only standard-library types: streams, threads, unique_ptr.
-- [ ] `std::move_iterator`.
-- [ ] Moving algorithms.
-- [ ] Remove algorithms and move semantics.
-- [ ] Strings/containers and allocator-dependent move behavior.
-- [ ] `std::shared_ptr` move behavior.
-- [ ] `std::pair`/tuple move behavior.
-- [ ] `std::optional` move behavior.
+**Videos**
+- `The STL Algorithm Mindset: Stop Writing Raw Loops by Default`
+- `lower_bound: The Invariant Behind Binary Search`
 
-**Block gate:** Whiteboard value categories/reference collapsing; write a correct forwarding wrapper from memory; diagnose five examples where `std::move` still copies.
+**Gate**
+Choose algorithm from complexity/precondition, not memory of syntax.
+
+## Unit 092 — Callable types: function pointers, functors, std::function, mem_fn, invoke
+
+**Read**
+- `<functional>` overview — https://en.cppreference.com/w/cpp/header/functional
+
+**Do**
+- Store same callable in each representation; inspect size/allocation/dispatch where relevant.
+
+**Videos**
+- `Function Pointer vs Lambda vs std::function`
+- `Does std::function Allocate? Let's Measure`
+
+**Gate**
+Explain type erasure and ownership/copyability of callable wrappers.
+
+## Unit 093 — tuple, pair, optional, variant and any
+
+**Read**
+- `tuple`, `pair`, `optional`, `variant`, `any` cppreference pages.
+
+**Do**
+- Variant-based state machine vs virtual hierarchy; optional return, any type erasure, tuple apply/invoke.
+
+**Videos**
+- `variant vs Virtual Polymorphism: Same Problem, Different Trade-offs`
+- `optional, any and variant: Three Very Different Vocabulary Types`
+
+**Gate**
+Choose the right vocabulary type and state lifetime/error implications.
+
+## Unit 094 — Allocators, allocator_traits and PMR
+
+**Read**
+- Allocator library — https://en.cppreference.com/w/cpp/memory/allocator
+- `allocator_traits` — https://en.cppreference.com/w/cpp/memory/allocator_traits
+- PMR — https://en.cppreference.com/w/cpp/memory/memory_resource
+
+**Do**
+- Counting allocator; monotonic_buffer_resource experiment; container propagation behavior at a practical level.
+
+**Videos**
+- `C++ Allocators: The Layer Under Every STL Container`
+- `std::pmr: Changing Allocation Strategy Without Changing Container Type`
+
+**Gate**
+Explain allocator vs memory resource and why allocator propagation can affect move complexity.
+
+## Unit 095 — chrono, filesystem, system_error and source-level utilities
+
+**Read**
+- `chrono` — https://en.cppreference.com/w/cpp/chrono
+- filesystem — https://en.cppreference.com/w/cpp/filesystem
+- `system_error` — https://en.cppreference.com/w/cpp/error/system_error
+
+**Do**
+- Build file scanner with filesystem + chrono timing + error_code/exception variants.
+
+**Videos**
+- `C++ Filesystem: Paths Are Not Just Strings`
+- `error_code vs Exception in System APIs`
+
+**Gate**
+Use library facilities without unsafe string/time shortcuts.
 
 ---
 
-## Block F — Lambdas
+# Stage 5 — C++17 in a linear pass
 
-### Item 31 — Avoid default capture modes
+> Primary source: Nicolai Josuttis, *C++17 — The Complete Guide*. Read the named topic section, then cppreference.
 
-- [ ] `[&]` maintenance/lifetime hazards.
-- [ ] `[=]` maintenance/lifetime hazards.
-- [ ] `this` historically captured, not a snapshot of every member.
-- [ ] Dangling `this` when closure outlives object.
-- [ ] Static-storage/global variables not captured as locals.
-- [ ] Explicit captures improve reviewability.
-- [ ] Modern `[*this]` copy semantics later.
+## Unit 096 — Structured bindings, if/switch initializers, inline variables
 
-### Item 32 — Use init capture to move objects into closures
+**Read**
+- Josuttis topics: `Structured Bindings`, `if and switch with initializers`, `Inline variables`.
+- cppreference pages for each.
 
-- [ ] Generalized lambda capture.
-- [ ] Move-only state.
-- [ ] Capture expressions.
-- [ ] Closure member lifetime.
-- [ ] Ownership transfer into callback.
-- [ ] Pre-C++14 workaround awareness only.
+**Do**
+- Structured-binding reference/copy tests; tuple/array/aggregate cases; inline-variable ODR example.
 
-### Item 33 — Use `decltype` on `auto&&` parameters to `std::forward` them
+**Videos**
+- `Structured Bindings: Copy or Reference?`
+- `Inline Variables Finally Solved a Header Problem`
 
-- [ ] Generic lambda parameters.
-- [ ] `auto&&` as forwarding reference.
-- [ ] `decltype(param)` as forwarding type.
-- [ ] Preserve lvalue/rvalue category.
-- [ ] Multiple parameters.
+**Gate**
+Predict binding type/lifetime.
 
-### Item 34 — Prefer lambdas to `std::bind`
+## Unit 097 — C++17 evaluation/lambda/aggregate/noexcept/aligned-new changes
 
-- [ ] Readability.
-- [ ] Argument binding clarity.
-- [ ] Overloaded function handling.
-- [ ] Evaluation timing.
-- [ ] Perfect forwarding limitations.
-- [ ] Placeholder opacity.
-- [ ] Generated-type/compiler optimization considerations.
+**Read**
+- Josuttis C++17 Basic Language Features topics: mandatory RVO/materialization, lambda improvements, defined evaluation order, aggregates, noexcept type system, aligned allocation, new attributes.
 
----
+**Do**
+- Version-difference experiments compiled as C++14 vs C++17.
 
-## Block G — Concurrency API Preview from Scott
+**Videos**
+- `C++14 vs C++17: Same Code, Different Language Guarantees`
+- `Mandatory Copy Elision Changed What “Return by Value” Means`
 
-These are mastered to modern-C++ API depth here and then revisited much more deeply in Curriculum 02.
+**Gate**
+State the C++17 rule change, not just current behavior.
 
-### Item 35 — Prefer task-based programming to thread-based
+## Unit 098 — CTAD, deduction guides and fold expressions
 
-- [ ] Return values through futures.
-- [ ] Exception propagation.
-- [ ] Thread management abstraction.
-- [ ] Scheduler freedom.
-- [ ] Cases needing explicit thread identity/priority/affinity later.
+**Read**
+- Josuttis Template Improvements topics: CTAD/deduction guides, fold expressions, pack expansion in using declarations, auto NTTPs.
 
-### Item 36 — Specify `std::launch::async` if asynchronicity is essential
+**Do**
+- Custom deduction guides and folds over heterogeneous packs.
 
-- [ ] Default policy may be `async`, `deferred`, or implementation choice.
-- [ ] Deferred execution.
-- [ ] `wait_for`/status behavior awareness.
-- [ ] Destructor/wait semantics awareness.
-- [ ] Why explicit policy matters to correctness/performance assumptions.
+**Videos**
+- `CTAD: When the Class Template Deduces Itself`
+- `Fold Expressions Replaced Recursive Variadic Templates`
 
-### Item 37 — Make `std::thread`s unjoinable on all paths
+**Gate**
+Write deduction guide/folds without copying syntax.
 
-- [ ] Joinable definition.
-- [ ] Destructor of joinable `std::thread` terminates.
-- [ ] Exception paths.
-- [ ] Join vs detach consequences.
-- [ ] RAII thread ownership.
-- [ ] C++20 `std::jthread` comparison later.
+## Unit 099 — if constexpr, void_t, bool_constant and invoke
 
-### Item 38 — Be aware of varying thread-handle destructor behavior
+**Read**
+- Josuttis C++17 template improvements: compile-time if, type-trait improvements, `void_t`, `bool_constant`, `invoke`.
 
-- [ ] `std::thread` destructor termination if joinable.
-- [ ] Future destructor behavior can depend on creation/source.
-- [ ] Avoid assuming all asynchronous handles behave alike.
+**Do**
+- Detection idiom; replace tag/SFINAE branching with if constexpr.
 
-### Item 39 — Consider `void` futures for one-shot event communication
+**Videos**
+- `The Detection Idiom Before Concepts`
+- `if constexpr: Compile-Time Branches That Remove Invalid Code`
 
-- [ ] Promise/future one-shot signal.
-- [ ] Condition-variable alternative.
-- [ ] Shared future awareness.
-- [ ] One-shot nature and ownership.
+**Gate**
+Explain discarded statements vs runtime if.
 
-### Item 40 — Use `std::atomic` for concurrency, `volatile` for special memory
+## Unit 100 — optional and variant
 
-- [ ] `volatile` does not make operations atomic.
-- [ ] `volatile` does not establish inter-thread happens-before.
-- [ ] Atomic read-modify-write.
-- [ ] Compiler optimization constraints of volatile are not synchronization semantics.
-- [ ] Memory-mapped I/O/special-memory motivation at awareness level.
+**Read**
+- Josuttis C++17 chapters/topics for `optional` and `variant` including variant polymorphism.
 
----
+**Do**
+- Parse/result API with optional; state machine with variant + visit.
 
-## Block H — Tweaks
+**Videos**
+- `optional: Absence Is Not an Error Code`
+- `variant + visit: Closed-World Polymorphism in C++17`
 
-### Item 41 — Consider pass by value for copyable parameters that are cheap to move and always copied
+**Gate**
+Choose optional/variant vs pointer/inheritance/error object.
 
-- [ ] `const T&` + copy inside.
-- [ ] Overload pair (`const T&`, `T&&`).
-- [ ] By-value + move into member.
-- [ ] Lvalue caller cost.
-- [ ] Rvalue caller cost.
-- [ ] Slicing risk for polymorphic types.
-- [ ] Move-assignment cost may differ from move-construction.
-- [ ] Exception behavior.
-- [ ] Parameter only “sometimes copied” changes the trade-off.
-- [ ] Large/expensive-to-move types.
+## Unit 101 — any, byte and string_view
 
-### Item 42 — Consider emplacement instead of insertion
+**Read**
+- Josuttis topics: `any`, `byte`, `string_view`, interface design with string_view.
 
-- [ ] `emplace_back`/`emplace` construct in destination.
-- [ ] It does not universally mean fewer operations.
-- [ ] Explicit constructors can be invoked through emplacement.
-- [ ] API may accept argument combinations `push` would reject.
-- [ ] Resource-management safety considerations.
-- [ ] Associative-container emplacement variants.
-- [ ] `try_emplace` later.
-- [ ] Measure real effects; do not cargo-cult emplace.
+**Do**
+- string_view dangling bug zoo; any casts; byte-based buffer.
+
+**Videos**
+- `string_view: Zero Copy, Zero Ownership, Plenty of Lifetime Bugs`
+- `std::any: Runtime Type Erasure With a Price`
+
+**Gate**
+Audit string_view lifetime across API boundaries.
+
+## Unit 102 — filesystem, parallel STL and remaining C++17 library improvements
+
+**Read**
+- Josuttis Filesystem chapter/topic and Parallel STL + new algorithms/container improvements.
+
+**Do**
+- Filesystem utility; compare `reduce` vs `accumulate` semantics; use execution policies only after understanding constraints.
+
+**Videos**
+- `std::reduce Is Not Just Parallel accumulate`
+- `C++17 Filesystem: Real Paths, Permissions and Errors`
+
+**Gate**
+Know where parallel execution can change assumptions about ordering/side effects.
 
 ---
 
-# 4. Template and generic-programming mastery — beyond Scott
+# Stage 6 — C++20 in a linear pass
 
-Primary source: **C++ Templates: The Complete Guide, 2nd Edition** plus cppreference.
+> Primary source: Nicolai Josuttis, *C++20 — The Complete Guide*.
 
-## 4.1 Function templates
+## Unit 103 — Spaceship operator and comparison rewriting
 
-- [ ] Basic deduction.
-- [ ] Multiple template parameters.
-- [ ] Default template arguments.
-- [ ] Overloading function templates.
-- [ ] Template/non-template overload resolution.
-- [ ] Return-type deduction issues.
-- [ ] Explicit template arguments.
+**Read**
+- Josuttis topic: Spaceship Operator.
+- `<=>` — https://en.cppreference.com/w/cpp/language/operator_comparison
 
-## 4.2 Class templates
+**Do**
+- Strong/weak/partial ordering examples; defaulted comparisons.
 
-- [ ] Class-template definition/use.
-- [ ] Instantiation on demand.
-- [ ] Member templates.
-- [ ] Friend declarations.
-- [ ] Full specialization.
-- [ ] Partial specialization.
-- [ ] Default template arguments.
-- [ ] Alias templates.
-- [ ] CTAD.
-- [ ] User-defined deduction guides.
-- [ ] Templated aggregates.
+**Videos**
+- `operator<=>: C++20 Rewrites Comparisons for You`
+- `strong_ordering vs partial_ordering: NaN Explains Why`
 
-## 4.3 Non-type template parameters (NTTPs)
+**Gate**
+Choose correct ordering category.
 
-- [ ] Integral/enum values.
-- [ ] Pointers/references historical constraints awareness.
-- [ ] `auto` NTTPs.
-- [ ] Structural types in newer standards at practical level.
-- [ ] Compile-time configuration use cases.
+## Unit 104 — Concepts: definitions, requires, subsumption
 
-## 4.4 Variadic templates
+**Read**
+- Josuttis Concepts section: motivation, definitions, requires clauses/expressions, sub-concepts, subsumption, standard concepts.
+- cppreference constraints — https://en.cppreference.com/w/cpp/language/constraints
 
-- [ ] Parameter packs.
-- [ ] Pack expansion locations.
-- [ ] Recursive variadic pattern awareness.
-- [ ] Fold expressions.
-- [ ] `sizeof...`.
-- [ ] Variadic inheritance/mixins awareness.
+**Do**
+- Convert Unit 074 SFINAE APIs to concepts; create ambiguous/subsumed overloads.
 
-## 4.5 Dependent names and lookup
+**Videos**
+- `C++20 Concepts: Templates Finally Get Readable Constraints`
+- `requires Expressions vs requires Clauses`
+- `Concept Subsumption: Which Constrained Overload Wins?`
 
-- [ ] Dependent vs non-dependent names.
-- [ ] Why `typename` is required.
-- [ ] Why `template` disambiguator is required.
-- [ ] `this->` in dependent base classes.
-- [ ] Two-phase lookup model.
-- [ ] ADL with templates.
-- [ ] Point of instantiation awareness.
-- [ ] Common “works on one compiler, fails on another” historical portability traps.
+**Gate**
+Design a concept that checks semantics without overconstraining implementation.
 
-## 4.6 Specialization and instantiation
+## Unit 105 — Ranges fundamentals, views and pipelines
 
-- [ ] Full function-template specialization and why overloads are often preferable.
-- [ ] Full class specialization.
-- [ ] Partial class specialization.
-- [ ] Variable-template specialization.
-- [ ] Explicit instantiation declaration (`extern template`).
-- [ ] Explicit instantiation definition.
-- [ ] Code-bloat/build-time motivations.
+**Read**
+- Josuttis Ranges and Views: motivation, views, projections, adaptors, lazy evaluation.
+- cppreference ranges — https://en.cppreference.com/w/cpp/ranges
 
-## 4.7 SFINAE and constraints
+**Do**
+- Build pipelines; mutate through views; compare eager container creation.
 
-- [ ] Substitution failure vs hard error.
-- [ ] Immediate context at practical level.
-- [ ] `std::enable_if`.
-- [ ] Detection idiom / `void_t`.
-- [ ] Traits-based dispatch.
-- [ ] Tag dispatch.
-- [ ] Why concepts are generally clearer for new C++20 code.
-- [ ] Read legacy SFINAE even if you prefer concepts.
+**Videos**
+- `C++20 Ranges: Algorithms Without begin/end Boilerplate`
+- `Views Are Lazy—and That Changes Everything`
 
-## 4.8 Type traits
+**Gate**
+Explain range vs view and evaluation timing.
 
-- [ ] Primary category traits.
-- [ ] Composite traits.
-- [ ] Property traits.
-- [ ] Type transformations.
-- [ ] `_v` and `_t` helper aliases.
-- [ ] `decay`.
-- [ ] `remove_cvref`.
-- [ ] `common_type`/`common_reference` awareness.
-- [ ] `is_invocable` family.
-- [ ] `invoke_result`.
-- [ ] Traits driving `if constexpr`/concepts.
+## Unit 106 — Range lifetime, borrowed ranges, sentinels and const traps
 
-## 4.9 Metaprogramming
+**Read**
+- Josuttis Ranges details: sentinels, borrowed ranges, dangling, const issues, prvalues, limitations.
 
-- [ ] Compile-time values/types.
-- [ ] Integral constants.
-- [ ] Recursive instantiation awareness.
-- [ ] `constexpr` replacing some template metaprogramming.
-- [ ] `if constexpr`.
-- [ ] Compile-time complexity/build-time cost.
-- [ ] Template diagnostics and maintainability.
-- [ ] Avoid cleverness without value.
+**Do**
+- Create dangling-view examples; test borrowed_range and prvalue pipelines.
 
-## 4.10 Generic-library design
+**Videos**
+- `The C++20 View That Dangled`
+- `Borrowed Ranges: The Lifetime Concept Behind Safe Iterators`
 
-- [ ] Requirements on template parameters.
-- [ ] Concepts as executable/documented requirements.
-- [ ] Perfect forwarding where justified.
-- [ ] Customization points awareness.
-- [ ] ADL-based customization.
-- [ ] Hidden friends.
-- [ ] Policy-based design.
-- [ ] CRTP.
-- [ ] Mixins.
-- [ ] Type erasure as an alternative to templates.
+**Gate**
+Audit range pipeline lifetime before running it.
 
-**Template gate:** implement a small generic library using function/class templates, traits, variadics and concepts; diagnose dependent-name and overload-resolution failures without searching first.
+## Unit 107 — span and non-owning contiguous APIs
 
----
+**Read**
+- `std::span` — https://en.cppreference.com/w/cpp/container/span
+- Josuttis ranges/spans material.
 
-# 5. Standard Library / STL mastery
+**Do**
+- Replace pointer+size APIs with span; const/mutable span and subspan experiments.
 
-Do not reduce STL knowledge to “I know vector/map”. For every container/algorithm, learn complexity, iterator invalidation, exception behavior, allocation behavior and cache implications at a practical level.
+**Videos**
+- `std::span: A Pointer and Size With Better Semantics`
+- `span Does Not Own Memory—Lifetime Still Matters`
 
-## 5.1 Sequence containers
+**Gate**
+Use span only where contiguous borrowed lifetime is valid.
 
-- [ ] `std::array`.
-- [ ] `std::vector`.
-- [ ] `std::deque`.
-- [ ] `std::list`.
-- [ ] `std::forward_list`.
+## Unit 108 — Coroutines: language transformation and handles
 
-For each:
-- [ ] Memory layout model.
-- [ ] Complexity guarantees.
-- [ ] Iterator/reference invalidation.
-- [ ] Growth/insertion/erase behavior.
-- [ ] Allocation behavior.
-- [ ] Exception guarantees.
-- [ ] Move/copy implications.
-- [ ] Typical cache behavior.
+**Read**
+- Josuttis Coroutines: introduction, coroutine interfaces/handles, promise types, `co_await`, `co_yield`, `co_return`.
+- cppreference coroutines — https://en.cppreference.com/w/cpp/language/coroutines
 
-**Mandatory build:** educational `Vector<T>` using raw storage, placement construction, destruction, growth and exception safety.
+**Do**
+- Build tracer that logs creation, initial suspend, resume, final suspend and destruction.
 
-## 5.2 Associative containers
+**Videos**
+- `C++ Coroutines: What the Compiler Builds Around co_await`
+- `I Traced Every Suspend and Resume in a Coroutine`
 
-- [ ] `set` / `multiset`.
-- [ ] `map` / `multimap`.
-- [ ] Comparator strict-weak-order requirement.
-- [ ] Transparent comparators / heterogeneous lookup awareness.
-- [ ] Node handles (`extract`).
-- [ ] `merge`.
-- [ ] `try_emplace`.
-- [ ] `insert_or_assign`.
+**Gate**
+Draw coroutine frame/promise/handle lifetime.
 
-## 5.3 Unordered containers
+## Unit 109 — Coroutines advanced: awaiters, exceptions, memory and transfer
 
-- [ ] `unordered_set` / `unordered_map` families.
-- [ ] Hash/equality contract.
-- [ ] Buckets.
-- [ ] Load factor.
-- [ ] Rehash.
-- [ ] Iterator invalidation.
-- [ ] Adversarial/poor hash awareness.
-- [ ] Reserve/rehash API.
+**Read**
+- Josuttis advanced coroutine topics: awaitable/awaiter, symmetric transfer, exceptions, memory management, `await_transform`, coroutine traits.
 
-## 5.4 Container adaptors
+**Do**
+- Educational Task/Generator type; custom awaiter; inject exception; observe allocation.
 
-- [ ] `stack`.
-- [ ] `queue`.
-- [ ] `priority_queue`.
-- [ ] Understand underlying-container parameterization.
+**Videos**
+- `Awaiter vs Awaitable vs Promise: The Coroutine Vocabulary`
+- `Who Allocates the Coroutine Frame?`
 
-## 5.5 Strings and views
+**Gate**
+Explain control flow and ownership without framework magic.
 
-- [ ] `std::string` ownership.
-- [ ] Capacity/SSO awareness as implementation detail.
-- [ ] Iterator/reference invalidation.
-- [ ] `string_view` non-ownership.
-- [ ] `string_view` dangling hazards.
-- [ ] Substring/view operations.
-- [ ] `char_traits` awareness.
+## Unit 110 — Modules
 
-**Mandatory lab:** string_view lifetime bug zoo.
+**Read**
+- Josuttis Modules: interface/implementation units, partitions, global/private fragments, headers, practical compiler usage.
+- cppreference modules — https://en.cppreference.com/w/cpp/language/modules
 
-## 5.6 Iterators
+**Do**
+- Build a small module with interface + implementation + partition if your compiler/toolchain supports it.
 
-- [ ] Input/output/forward/bidirectional/random-access categories.
-- [ ] Contiguous iterator concept in modern C++.
-- [ ] Iterator traits.
-- [ ] `begin/end`, `cbegin/cend`.
-- [ ] Reverse iterators.
-- [ ] Move iterators.
-- [ ] Insert iterators.
-- [ ] Stream iterators awareness.
-- [ ] Sentinel model in ranges.
-- [ ] Iterator invalidation tables memorized conceptually, not mechanically.
+**Videos**
+- `C++20 Modules: Not Just Faster Headers`
+- `Building a Real Module With GCC/Clang/MSVC Support Caveats`
 
-## 5.7 Algorithms
+**Gate**
+Explain visibility vs reachability and migration constraints.
 
-- [ ] Non-modifying sequence algorithms.
-- [ ] Modifying algorithms.
-- [ ] Partitioning.
-- [ ] Sorting/partial sorting.
-- [ ] Binary search family.
-- [ ] Set algorithms.
-- [ ] Heap algorithms.
-- [ ] Min/max.
-- [ ] Numeric algorithms.
-- [ ] Remove/erase idiom and modern `erase`/`erase_if`.
-- [ ] Predicates and strict weak ordering.
-- [ ] Lambdas as predicates/projections.
-- [ ] Parallel execution policies awareness and safety constraints.
+## Unit 111 — jthread, stop_token, latch, barrier, semaphore
 
-## 5.8 Callable vocabulary
+**Read**
+- Josuttis Multi-Threading and Concurrency Features section.
+- cppreference pages for each primitive.
 
-- [ ] Function pointers.
-- [ ] Member pointers.
-- [ ] Functors.
-- [ ] Lambdas.
-- [ ] `std::function` type erasure and allocation/cost awareness.
-- [ ] `std::bind` legacy understanding.
-- [ ] `std::invoke`.
-- [ ] `std::mem_fn` awareness.
-- [ ] `std::move_only_function` in C++23.
+**Do**
+- Cancellation with jthread; phased worker with barrier; resource pool with semaphore.
 
-## 5.9 Product/sum/optional vocabulary types
+**Videos**
+- `std::jthread Fixed a Dangerous std::thread Default`
+- `Latch vs Barrier vs Semaphore: Pick the Right Primitive`
 
-- [ ] `pair`.
-- [ ] `tuple`.
-- [ ] structured bindings.
-- [ ] `optional`.
-- [ ] `variant`.
-- [ ] `visit`.
-- [ ] `monostate`.
-- [ ] `any`.
-- [ ] `expected` in C++23.
-- [ ] When each communicates API semantics better than sentinel values/raw unions.
+**Gate**
+API-level competence only; deep concurrency correctness belongs to Curriculum 02.
 
-## 5.10 Smart pointers and allocator-aware library
+## Unit 112 — atomic_ref and C++20 atomic additions
 
-- [ ] `allocator` model.
-- [ ] `allocator_traits`.
-- [ ] Propagation traits awareness.
-- [ ] Stateful allocator implications.
-- [ ] Allocator effects on container move/swap behavior awareness.
-- [ ] `std::pmr::memory_resource`.
-- [ ] `monotonic_buffer_resource`.
-- [ ] `polymorphic_allocator`.
-- [ ] Scoped allocator awareness.
+**Read**
+- `atomic_ref` — https://en.cppreference.com/w/cpp/atomic/atomic_ref
+- Josuttis concurrency additions.
 
-## 5.11 Utility/system library
+**Do**
+- Apply atomic_ref to suitably aligned object; document lifetime/alignment requirements.
 
-- [ ] `chrono` fundamentals.
-- [ ] `filesystem`.
-- [ ] `random` engines vs distributions.
-- [ ] `numeric` algorithms.
-- [ ] `bitset`.
-- [ ] `<bit>` utilities in newer standards.
-- [ ] `span`.
-- [ ] `mdspan` later.
-- [ ] `source_location`.
-- [ ] `format`/`print`.
-- [ ] `stacktrace`.
-- [ ] `regex` awareness; not an interview priority unless role needs it.
-- [ ] iostream state/RAII/manipulators at working level.
+**Videos**
+- `atomic_ref: Atomic Operations Without Changing the Stored Type`
+- `The Alignment and Aliasing Rules atomic_ref Requires`
 
-**STL gate:** Given an unfamiliar workload, choose a container/algorithm and justify complexity, invalidation, allocation, lifetime and cache behavior.
+**Gate**
+Know when atomic_ref is valid; defer memory-order mastery to Curriculum 02.
+
+## Unit 113 — consteval, constinit and expanded constexpr
+
+**Read**
+- Josuttis compile-time features.
+- `consteval` / `constinit` / `constexpr` cppreference pages.
+
+**Do**
+- Compare runtime-callable constexpr, immediate consteval and initialization-only constinit.
+
+**Videos**
+- `constexpr vs consteval vs constinit`
+- `Compile-Time vector/string: What C++20 Actually Allows`
+
+**Gate**
+Choose correct compile-time facility by guarantee required.
+
+## Unit 114 — C++20 lambdas, aggregates, attributes and small core features
+
+**Read**
+- Josuttis `Other core features`: lambda extensions, enum using declarations, conditional explicit, char8_t, range-for initializer, likely/unlikely, no_unique_address, nodiscard messages, aggregate changes.
+
+**Do**
+- One minimal experiment per feature; compare layout with `[[no_unique_address]]`.
+
+**Videos**
+- `[[no_unique_address]]: The Attribute That Can Shrink Objects`
+- `conditional explicit: One Constructor, Two Conversion Policies`
+
+**Gate**
+Know what changed and where it affects API/ABI/layout.
+
+## Unit 115 — Formatting, chrono/calendar and library additions
+
+**Read**
+- Josuttis C++20 formatted output and chrono sections.
+- cppreference `<format>` and chrono calendar/time-zone pages.
+
+**Do**
+- Type-safe formatting; calendar/time-zone examples if implementation supports them.
+
+**Videos**
+- `std::format: Type-Safe Formatting in C++`
+- `C++20 chrono Finally Learned Calendars and Time Zones`
+
+**Gate**
+Use facility correctly and know implementation-support caveats.
 
 ---
 
-# 6. C++17 — systematic coverage
+# Stage 7 — C++23 in a linear pass
 
-Use Josuttis C++17 guide + cppreference. Do not learn only the headline features.
+> Primary source: Nicolai Josuttis, *C++23 — The Complete Guide* / his C++23 topic sequence, plus current cppreference.
 
-## 6.1 Language
+## Unit 116 — expected and monadic error handling
 
-- [ ] Structured bindings.
-- [ ] Structured binding lifetime/reference behavior.
-- [ ] `if`/`switch` with initializer.
-- [ ] `if constexpr`.
-- [ ] Fold expressions.
-- [ ] CTAD.
-- [ ] Deduction guides.
-- [ ] Inline variables.
-- [ ] Guaranteed copy elision in specified prvalue cases.
-- [ ] Prvalue materialization model change awareness.
-- [ ] `noexcept` as part of function type.
-- [ ] Nested namespace syntax.
-- [ ] `constexpr` lambda.
-- [ ] Lambda capture of `*this`.
-- [ ] Attributes: `[[nodiscard]]`, `[[maybe_unused]]`, `[[fallthrough]]`.
-- [ ] Aggregate/base-class changes at practical level.
-- [ ] `auto` NTTP.
-- [ ] Variadic using-declarations awareness.
+**Read**
+- `std::expected` — https://en.cppreference.com/w/cpp/utility/expected
+- Josuttis topic: `std::expected<>` and monadic operations for optional/expected.
 
-## 6.2 Library
+**Do**
+- Parse/config API with expected; chain `and_then`/`transform`/error path where supported.
 
-- [ ] `optional`.
-- [ ] `variant`.
-- [ ] `any`.
-- [ ] `string_view`.
-- [ ] `filesystem`.
-- [ ] `byte`.
-- [ ] `invoke`.
-- [ ] `apply`.
-- [ ] `make_from_tuple` awareness.
-- [ ] `from_chars` / `to_chars`.
-- [ ] `scoped_lock`.
-- [ ] `shared_mutex`/`shared_lock` availability context.
-- [ ] Parallel algorithms/execution policies.
-- [ ] `pmr` polymorphic memory resources.
-- [ ] Node handles for associative containers.
-- [ ] `try_emplace` / `insert_or_assign`.
-- [ ] `clamp`.
-- [ ] `gcd` / `lcm` awareness.
-- [ ] `hardware_destructive_interference_size` / constructive interference size awareness.
-- [ ] `launder` awareness.
+**Videos**
+- `std::expected: Return a Value or a Real Error Type`
+- `Monadic expected: Chaining Without Exception or Error-Code Boilerplate`
 
-**C++17 gate:** build a small application using structured bindings, variant/visit, optional, string_view, filesystem, CTAD and pmr deliberately — then identify all non-owning lifetimes.
+**Gate**
+Compare exceptions, error_code, optional and expected.
 
----
+## Unit 117 — move_only_function and forward_like
 
-# 7. C++20 — systematic coverage
+**Read**
+- `std::move_only_function` and `std::forward_like` cppreference pages.
 
-Use Josuttis C++20 guide + cppreference.
+**Do**
+- Move-only callback owning unique_ptr; forwarding members with forward_like.
 
-## 7.1 Concepts and constraints
+**Videos**
+- `move_only_function: std::function for Move-Only Callables`
+- `forward_like: Forward With Someone Else's cv-ref Qualifiers`
 
-- [ ] Concept definition.
-- [ ] Requires-clause.
-- [ ] Requires-expression.
-- [ ] Simple requirement.
-- [ ] Type requirement.
-- [ ] Compound requirement.
-- [ ] Nested requirement.
-- [ ] Abbreviated function templates.
-- [ ] Constrained `auto`.
-- [ ] Constraint normalization/subsumption at practical overload-resolution level.
-- [ ] Standard concepts (`same_as`, `convertible_to`, integral concepts, invocable/predicate/regular, iterator concepts, etc.) at working level.
-- [ ] Replace legacy SFINAE example with concepts.
+**Gate**
+Explain why std::function's copyability can be wrong for ownership-heavy callbacks.
 
-## 7.2 Ranges
+## Unit 118 — mdspan
 
-- [ ] Range vs iterator/sentinel.
-- [ ] Views are generally non-owning/lazy.
-- [ ] View lifetime hazards.
-- [ ] Borrowed ranges awareness.
-- [ ] Dangling handling.
-- [ ] Range algorithms.
-- [ ] Projections.
-- [ ] Common views: transform, filter, take, drop, reverse, split, join awareness.
-- [ ] Pipe syntax.
-- [ ] Iterator category/concept interactions.
-- [ ] Performance/laziness implications.
+**Read**
+- `std::mdspan` — https://en.cppreference.com/w/cpp/container/mdspan
+- Josuttis topic: mdspan.
 
-## 7.3 Coroutines
+**Do**
+- 2D/3D view over flat memory; layout/stride mapping experiment.
 
-- [ ] Coroutine transformation mental model.
-- [ ] Coroutine frame.
-- [ ] Promise type.
-- [ ] `co_await`.
-- [ ] Awaitable/awaiter protocol.
-- [ ] `await_ready` / `await_suspend` / `await_resume`.
-- [ ] `co_yield`.
-- [ ] `co_return`.
-- [ ] Initial/final suspend.
-- [ ] Lifetime of frame.
-- [ ] Allocation/elision awareness.
-- [ ] Exceptions in coroutines.
-- [ ] Build a tiny educational task/generator-like coroutine.
+**Videos**
+- `mdspan: Multidimensional Views Without Owning Memory`
+- `Row-Major, Column-Major and Strides With mdspan`
 
-## 7.4 Modules
+**Gate**
+Separate storage ownership from multidimensional indexing/layout.
 
-- [ ] Module interface unit.
-- [ ] Module implementation unit.
-- [ ] Import/export.
-- [ ] Global module fragment awareness.
-- [ ] Header units awareness.
-- [ ] Build-system/toolchain maturity considerations.
-- [ ] Modules do not automatically solve ABI/versioning.
+## Unit 119 — print/println and stacktrace
 
-## 7.5 Language additions
+**Read**
+- `std::print` / `std::println` and `std::stacktrace` cppreference pages.
+- Josuttis formatted-output and stacktrace topics.
 
-- [ ] Three-way comparison `<=>`.
-- [ ] Defaulted comparisons.
-- [ ] Comparison categories.
-- [ ] Designated initializers and restrictions.
-- [ ] `consteval`.
-- [ ] `constinit`.
-- [ ] Expanded `constexpr` capabilities.
-- [ ] Templated lambdas.
-- [ ] `char8_t`.
-- [ ] `[[no_unique_address]]`.
-- [ ] Aggregate initialization with parentheses awareness.
-- [ ] Likely/unlikely attributes awareness.
+**Do**
+- Logging/demo tool using format/print; capture stacktrace on controlled error if implementation supports it.
 
-## 7.6 Library additions
+**Videos**
+- `std::print: C++ Finally Has a Modern Hello World`
+- `std::stacktrace: Debug Context as a Standard-Library Type`
 
-- [ ] `span`.
-- [ ] `jthread`.
-- [ ] `stop_token`/stop source/callback awareness.
-- [ ] `semaphore`.
-- [ ] `latch`.
-- [ ] `barrier`.
-- [ ] `atomic_ref`.
-- [ ] Atomic wait/notify.
-- [ ] `bit_cast`.
-- [ ] `endian`.
-- [ ] Bit operations (`popcount`, rotations, countl/countr, etc.).
-- [ ] `source_location`.
-- [ ] `format`.
-- [ ] `starts_with`/`ends_with`.
-- [ ] `erase`/`erase_if`.
-- [ ] `ssize`.
-- [ ] `to_array`.
-- [ ] `midpoint`/`lerp` awareness.
-- [ ] Calendar/time-zone additions at awareness level unless needed.
-- [ ] `syncstream` awareness.
-- [ ] `make_shared` array support awareness.
+**Gate**
+Know portability/implementation support in your toolchain.
 
-**C++20 gate:** use concepts + ranges + one coroutine + `span` + `jthread` in a coherent mini-project and explain all ownership/lifetime boundaries.
+## Unit 120 — Deducing this / explicit object parameters
+
+**Read**
+- Explicit object member functions — https://en.cppreference.com/w/cpp/language/member_functions#Explicit_object_member_functions
+- Josuttis topic: Deducing this.
+
+**Do**
+- Remove duplicated const/non-const/ref-qualified member overloads; recursive lambda example.
+
+**Videos**
+- `Deducing this: The Feature That Changes Member Functions`
+- `One Function for const&, &, and && With Explicit Object Parameters`
+
+**Gate**
+Explain how explicit object parameter changes deduction and overload design.
+
+## Unit 121 — if consteval, range-for lifetime fix, static call/subscript operators
+
+**Read**
+- Josuttis topics: `if consteval`, fixed range-based for loop, static operators/recursive lambdas, other core updates.
+- cppreference C++23 language support pages.
+
+**Do**
+- Compile selected examples in C++20 vs C++23.
+
+**Videos**
+- `if consteval: Detect Immediate Evaluation Cleanly`
+- `C++23 Fixed a Range-for Lifetime Trap`
+
+**Gate**
+Know which problems are version fixes rather than new patterns to memorize.
+
+## Unit 122 — C++23 ranges/views, ranges::to and generator
+
+**Read**
+- Josuttis C++23 ranges/views + `ranges::to` + generator topics.
+- Current cppreference ranges pages.
+
+**Do**
+- Compose new views, materialize with ranges::to where supported, simple generator.
+
+**Videos**
+- `ranges::to: Finally Materialize a View Cleanly`
+- `std::generator: Coroutines Meet Ranges`
+
+**Gate**
+Understand lifetime and lazy/eager transition.
+
+## Unit 123 — flat containers and remaining practical C++23 library additions
+
+**Read**
+- Josuttis topic: flat sets/maps and remaining library updates.
+- cppreference C++23 library features index — https://en.cppreference.com/w/cpp/23
+
+**Do**
+- Compare flat_map conceptually/experimentally with map/unordered_map where implementation supports it.
+
+**Videos**
+- `flat_map: Sorted Contiguous Storage vs Tree-Based map`
+- `Which C++23 Features Matter to Systems Programmers?`
+
+**Gate**
+Be able to discuss support status instead of assuming every production compiler/library has everything.
 
 ---
 
-# 8. C++23 — systematic practical coverage
+# Stage 8 — Toolchain, ABI, debugging and production C++
 
-Use Josuttis C++23 guide + cppreference. Focus on features relevant to systems, API design and generic code, while still being aware of the broader release.
+## Unit 124 — Preprocessor, headers, CMake and reproducible builds
 
-## 8.1 Language
+**Read**
+- CMake official tutorial — https://cmake.org/cmake/help/latest/guide/tutorial/
+- Revisit translation phases.
 
-- [ ] Explicit object parameter / “deducing this”.
-- [ ] Recursive lambdas enabled by explicit object parameter pattern.
-- [ ] `if consteval`.
-- [ ] Static `operator()`.
-- [ ] Static `operator[]`.
-- [ ] Multidimensional subscript improvements.
-- [ ] Range-for lifetime fixes.
-- [ ] `auto(x)` / `auto{x}` decay-copy style use.
-- [ ] Extended floating-point NTTP/constexpr-related awareness where supported.
-- [ ] C++23 constexpr relaxations at practical level.
+**Do**
+- Multi-target CMake project, warnings, sanitizers, Debug/Release, compile_commands.json.
 
-## 8.2 Library
+**Videos**
+- `CMake Without Cargo Cult: Targets, Includes and Libraries`
+- `What the C++ Preprocessor Actually Does Before Compilation`
 
-- [ ] `expected`.
-- [ ] `unexpected`.
-- [ ] Monadic operations on `expected`.
-- [ ] Monadic operations on `optional`.
-- [ ] `move_only_function`.
-- [ ] `forward_like`.
-- [ ] `mdspan`.
-- [ ] `print` / `println`.
-- [ ] `stacktrace`.
-- [ ] `to_underlying`.
-- [ ] `byteswap`.
-- [ ] `unreachable` and the danger of lying to the optimizer.
-- [ ] `out_ptr` / `inout_ptr` awareness for C interop.
-- [ ] `spanstream` awareness.
-- [ ] `string::contains` / `string_view::contains`.
-- [ ] `ranges::to`.
-- [ ] New ranges/views such as zip/adjacent/chunk/slide/stride/repeat/cartesian families at working awareness depending library support.
-- [ ] Range fold algorithms.
-- [ ] `std::generator`.
-- [ ] Flat associative containers (`flat_map`, `flat_set`) availability/support awareness.
-- [ ] Formatting/ranges/tuple improvements.
+**Gate**
+Build project from terminal without IDE magic.
 
-**C++23 gate:** redesign an older API using `expected`, `move_only_function`, `forward_like`, modern ranges and `mdspan` where each feature is justified; explain toolchain/library support before using it in production.
+## Unit 125 — Static libraries, shared libraries and symbol inspection
 
----
+**Read**
+- GCC/Clang docs as needed; Linux `nm`, `readelf`, `objdump`, `ldd` man pages.
 
-# 9. C++26 and post-C++23 awareness — do not let interviews surprise you
+**Do**
+- Build `.a` and `.so`; inspect symbols/dependencies; break/fix missing symbol and visibility cases.
 
-C++26-era features are **awareness-first**, because compiler/library support and interview expectations vary.
+**Videos**
+- `Static vs Shared Libraries: What the Linker Actually Produces`
+- `Reading C++ Symbols With nm, readelf and objdump`
 
-For the toolchains you actually use:
+**Gate**
+Diagnose link/load failure from command-line evidence.
 
-- [ ] Know how to check compiler language-standard support.
-- [ ] Know feature-test macros (`__cpp_*`, library feature-test macros) conceptually.
-- [ ] Track the current standard mode supported by GCC and Clang.
-- [ ] Be aware of major new standard-library/concurrency/execution developments relevant to systems programming.
-- [ ] Never claim production support without checking your actual compiler + standard library.
+## Unit 126 — Name mangling, ABI, vtables and binary compatibility
 
-Do not spend disproportionate time memorizing brand-new features before mastering C++11–23 fundamentals.
+**Read**
+- Itanium C++ ABI relevant sections — https://itanium-cxx-abi.github.io/cxx-abi/abi.html
+- Compiler docs for your platform.
 
----
+**Do**
+- Inspect mangled names, layout/vtables; deliberately break ABI by changing public class layout; compare PImpl.
 
-# 10. ABI, linking, binary boundaries and build/toolchain mastery
+**Videos**
+- `C++ ABI: Why Changing a Private Member Can Break Binary Compatibility`
+- `Name Mangling and vtables: Reading the Binary`
 
-This section is mandatory for senior C++ and architect-level interviews.
+**Gate**
+Separate standard language guarantees from ABI implementation conventions.
 
-## 10.1 Compilation/linking
+## Unit 127 — gdb/lldb and core-dump debugging
 
-- [ ] Preprocessor output.
-- [ ] Compilation to object file.
-- [ ] Assembly generation.
-- [ ] Linking.
-- [ ] Static library.
-- [ ] Shared library.
-- [ ] Symbol table.
-- [ ] Relocations awareness.
-- [ ] Dynamic loader awareness.
-- [ ] Name mangling.
-- [ ] Demangling.
-- [ ] ODR failures.
-- [ ] Undefined symbols.
-- [ ] Duplicate symbols.
-- [ ] Link order issues awareness.
-- [ ] Visibility attributes/toolchain controls awareness.
+**Read**
+- GDB manual selected commands: break, watch, bt, frame, threads, disassemble.
 
-## 10.2 ABI
+**Do**
+- Debug crash with symbols; core dump; watchpoint; multi-thread backtrace preview.
 
-- [ ] What ABI means.
-- [ ] Calling convention awareness.
-- [ ] Name mangling.
-- [ ] Class layout as ABI surface.
-- [ ] Vtable/vptr ABI reality.
-- [ ] Inline/template code across ABI boundaries.
-- [ ] STL types across binary boundaries and toolchain/version concerns.
-- [ ] Exception ABI concerns awareness.
-- [ ] RTTI across DSOs awareness.
-- [ ] PImpl for ABI insulation.
-- [ ] Versioned APIs.
-- [ ] Symbol visibility.
-- [ ] Plugin interfaces and C ABI boundary option.
+**Videos**
+- `Debugging a C++ Crash From a Core Dump`
+- `Watchpoints: Catch the Exact Write That Corrupted Memory`
 
-## 10.3 Build systems and compiler modes
+**Gate**
+Find a seeded crash without print-debugging.
 
-- [ ] CMake fundamentals.
-- [ ] Targets rather than global flags.
-- [ ] PUBLIC/PRIVATE/INTERFACE dependencies.
-- [ ] Include directories.
-- [ ] Compile features / C++ standard selection.
-- [ ] Debug vs release.
-- [ ] Sanitizer builds.
-- [ ] LTO awareness.
-- [ ] PGO awareness.
-- [ ] Warnings-as-errors trade-off.
-- [ ] GCC vs Clang diagnostic differences.
+## Unit 128 — ASan, UBSan, LSan and TSan awareness
 
-## 10.4 Binary-tool lab
+**Read**
+- Clang sanitizer docs — https://clang.llvm.org/docs/
 
-Build a small shared library and:
+**Do**
+- Seed UAF, OOB, leak, UB and data race; run relevant sanitizer and interpret report.
 
-- inspect symbols with `nm`/`readelf`,
-- inspect dependencies with `ldd`,
-- inspect assembly with `objdump`,
-- intentionally break ABI by changing class layout,
-- then redesign with PImpl.
+**Videos**
+- `I Created Five C++ Memory Bugs and Let ASan Find Them`
+- `UBSan Finds Bugs That “Work” in Debug Builds`
 
----
+**Gate**
+Read sanitizer traces and identify root cause, not just failing line.
 
-# 11. Debugging, sanitizers and failure diagnosis
+## Unit 129 — Compiler Explorer, optimization reports and assembly literacy
 
-A senior C++ engineer must be able to diagnose, not only write.
+**Read**
+- Compiler Explorer — https://godbolt.org/
+- GCC/Clang optimization-report docs as needed.
 
-- [ ] Compile-time errors: read first meaningful diagnostic rather than last cascade.
-- [ ] Template error reduction strategy.
-- [ ] Debug build flags.
-- [ ] gdb/lldb breakpoints.
-- [ ] Conditional breakpoints.
-- [ ] Watchpoints.
-- [ ] Stack traces.
-- [ ] Core dumps.
-- [ ] Inspect locals/objects/vtables where useful.
-- [ ] ASan use-after-free.
-- [ ] ASan buffer overflow.
-- [ ] ASan use-after-scope.
-- [ ] UBSan signed overflow/misalignment/bad casts where detected.
-- [ ] Leak detection.
-- [ ] TSan data-race introduction only; deep use in Curriculum 02.
-- [ ] Reproduce nondeterministic bugs with minimized test cases.
-- [ ] Delta-debug/minimal-reproducer habit.
-- [ ] Compiler Explorer for isolated compiler behavior.
+**Do**
+- Compare -O0/-O2/-O3, copies/moves, virtual calls, templates, vectorization examples.
 
-**Gate:** Given ten seeded bugs, find root cause with evidence rather than guessing.
+**Videos**
+- `Compiler Explorer: My Second Monitor for Learning C++`
+- `What -O2 Actually Changed in This C++ Function`
+
+**Gate**
+Read basic loads/stores/calls/branches and correlate with source; full performance depth comes later.
+
+## Unit 130 — Testing: unit, property, fuzz and compile-fail tests
+
+**Read**
+- GoogleTest docs — https://google.github.io/googletest/
+- libFuzzer docs — https://llvm.org/docs/LibFuzzer.html
+
+**Do**
+- Unit tests + death/error cases + fuzz parser + compile-fail/static_assert suite for template constraints.
+
+**Videos**
+- `Testing C++ Beyond Unit Tests`
+- `Fuzzing a C++ Parser Until It Crashes`
+
+**Gate**
+Choose test style based on failure mode.
+
+## Unit 131 — API design with ownership, views, errors and polymorphism
+
+**Read**
+- C++ Core Guidelines: interfaces, resource management, classes, errors.
+- Revisit relevant Iglberger later in architecture curriculum; here focus on C++-level API semantics.
+
+**Do**
+- Design one library API three ways; document ownership, lifetime, error and ABI contracts.
+
+**Videos**
+- `A Good C++ API Makes Ownership Obvious`
+- `Value, Reference, span, string_view, unique_ptr: What Should an API Take?`
+
+**Gate**
+A reviewer can identify ownership/lifetime without reading implementation.
+
+## Unit 132 — C++ capstone library
+
+**Read**
+- No new broad reading. Reuse exact sources above only as needed.
+
+**Do**
+Build one polished library containing several of:
+- value types + RAII resource handle
+- generic/constrained API
+- vector/allocator experiment or container-backed subsystem
+- type-erased/runtime-polymorphic boundary
+- PImpl public API
+- tests, sanitizers, benchmarks and CMake
+- ABI/versioning note
+
+**Videos**
+- `Building a Production-Style Modern C++ Library From Zero`
+- `Full Code Review: Ownership, Templates, ABI, Tests and Performance`
+
+**Gate**
+You can defend every public API and implementation trade-off.
 
 ---
 
-# 12. API design, const-correctness and ownership vocabulary
+# Stage 9 — Final C++ interview conversion gate
 
-This remains C++-specific even before the later architecture curriculum.
+## Unit 133 — 200 code-prediction questions
 
-- [ ] Value semantics.
-- [ ] Reference semantics.
-- [ ] Ownership transfer.
-- [ ] Borrowing.
-- [ ] Non-owning views (`span`, `string_view`).
-- [ ] Raw pointer as observer vs owner convention — make it explicit.
-- [ ] `unique_ptr` ownership transfer.
-- [ ] Shared ownership only when genuinely shared.
-- [ ] `const` correctness.
-- [ ] Strong types vs primitive obsession.
-- [ ] Enumerations.
-- [ ] Vocabulary types: optional/variant/expected.
-- [ ] Exceptions vs expected/error codes by boundary and domain.
-- [ ] Rule of Zero.
-- [ ] Immutability where useful.
-- [ ] PImpl and ABI.
-- [ ] Runtime polymorphism vs templates vs variant vs type erasure.
-- [ ] Header hygiene.
-- [ ] Minimal dependencies.
-- [ ] Stable public interfaces.
+**Do**
+Create/solve 200 mixed questions covering:
+- initialization
+- conversions/overloads
+- lifetime
+- special members
+- deduction/decltype
+- move/forwarding
+- templates
+- STL invalidation
+- exceptions/noexcept
+- C++17/20/23 features
 
----
+**Pass**
+≥90% after spaced review, not immediately after reading.
 
-# 13. Required implementations — educational, not production replacements
+**Video**
+- `200 Modern C++ Code-Prediction Questions: What I Got Wrong`
 
-Do these without copying library implementations.
+## Unit 134 — Implement-from-memory day
 
-1. **Tracked object**
-   - construction/copy/move/assignment/destruction counters.
+**Do without notes**
+- RAII file/fd handle
+- simplified unique_ptr
+- simplified vector growth core
+- LRU cache
+- perfect-forwarding wrapper
+- constrained generic algorithm
+- variant visitor/state machine
+- PImpl library skeleton
 
-2. **RAII resource wrapper**
-   - file descriptor or file handle.
+**Pass**
+Correct ownership/lifetime/exception behavior and tests.
 
-3. **Educational `UniquePtr<T>`**
-   - move construction/assignment, reset/release/get, custom deleter basics.
+**Video**
+- `I Rebuilt My Core C++ Toolkit Without Looking Anything Up`
 
-4. **Educational reference-counted pointer**
-   - enough to understand control blocks; explicitly document missing production concerns.
+## Unit 135 — Debugging and code-review day
 
-5. **Educational `Vector<T>`**
-   - raw allocation, placement construction, destruction, growth, move/copy fallback, exception safety.
+**Do**
+- Seed 20 bugs: UB, lifetime, ownership, iterator invalidation, bad move, template misuse, ABI/API issue.
+- Diagnose with warnings/sanitizers/gdb/Compiler Explorer.
 
-6. **Small type-erased callable wrapper**
-   - enough to understand `std::function`-style erasure; small-buffer optimization is optional later.
+**Pass**
+Find root causes and explain preventive design rule.
 
-7. **Variant-based state machine**
-   - compare with virtual-polymorphic design.
+**Video**
+- `20 Senior C++ Bugs: Debug Them With Me`
 
-8. **Template/concepts mini-library**
-   - traits, variadics, constraints, tests.
+## Unit 136 — Full Staff/Senior C++ mock
 
-9. **PImpl shared library**
-   - demonstrate binary-boundary effects.
+**Format**
+- 20 min language/lifetime.
+- 20 min templates/generic programming.
+- 15 min STL/API design.
+- 15 min debugging/toolchain/ABI.
+- 20–30 min coding/design problem.
 
-10. **C++20 coroutine tracer**
-    - log frame/suspend/resume/destruction behavior.
+**Pass**
+No major conceptual hole; answers remain precise under follow-up questions. Any failed area sends you back to its exact unit.
 
-11. **PMR experiment**
-    - default allocator vs monotonic resource for a controlled workload.
-
-12. **Bug zoo**
-    - lifetime, UB, iterator invalidation, proxy, dangling view, ownership and exception bugs.
-
----
-
-# 14. Required closed-book interview banks
-
-Build these over time; do not wait until the end.
-
-## 14.1 Core language — minimum 100 questions
-
-Must include:
-- initialization,
-- conversions,
-- overload resolution,
-- const/reference rules,
-- lifetime,
-- object model,
-- inheritance/virtual dispatch,
-- exceptions,
-- UB.
-
-## 14.2 Scott Meyers — minimum 3 questions per item
-
-42 items × 3 = **126 minimum questions**:
-
-- one “state the rule” question,
-- one code-prediction question,
-- one design/trade-off question.
-
-For difficult items (1–4, 14, 17–22, 23–30, 35–40), create more than three.
-
-## 14.3 Templates — minimum 75 questions
-
-Include:
-- deduction,
-- dependent names,
-- specialization,
-- two-phase lookup,
-- variadics,
-- SFINAE,
-- traits,
-- concepts,
-- CRTP,
-- overload-resolution interactions.
-
-## 14.4 STL — minimum 100 questions
-
-Include:
-- container choice,
-- complexity,
-- invalidation,
-- allocator behavior,
-- algorithm preconditions,
-- comparator/hash contracts,
-- string_view lifetime,
-- optional/variant/expected.
-
-## 14.5 Toolchain/ABI/debugging — minimum 50 questions
-
-Include:
-- compile vs link failures,
-- ODR,
-- symbol visibility,
-- vtables/ABI,
-- shared libraries,
-- sanitizers,
-- debugging strategy.
-
-## 14.6 Modern standards — minimum 100 questions
-
-Split across:
-- C++17,
-- C++20,
-- C++23,
-- feature-selection/trade-offs.
+**Videos**
+- `Full Staff C++ Mock Interview—No Trivia, Only Reasoning`
+- `What I Would Ask a Senior C++ Engineer in 90 Minutes`
 
 ---
 
-# 15. CppValley extraction rule
+# Source index
 
-**Never merge concepts only to satisfy a schedule.**
+Use these repeatedly; do not collect random courses unless a listed source fails to explain a specific concept.
 
-For each mastery unit, possible video types are:
+1. Scott Meyers — *Effective Modern C++* — **all 42 items**.
+2. cppreference — exact language/library reference: https://en.cppreference.com/w/
+3. C++ Core Guidelines — https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines
+4. Nicolai Josuttis — *C++ Move Semantics: The Complete Guide*.
+5. Vandevoorde/Josuttis/Gregor — *C++ Templates: The Complete Guide, 2nd Edition*.
+6. Nicolai Josuttis — *C++17: The Complete Guide*.
+7. Nicolai Josuttis — *C++20: The Complete Guide*.
+8. Nicolai Josuttis — *C++23: The Complete Guide* / current C++23 material.
+9. Josuttis — *The C++ Standard Library* as optional deeper library reading; cross-check version-sensitive behavior with cppreference.
+10. Compiler Explorer, GCC, Clang, gdb/lldb, sanitizers, CMake, GoogleTest and libFuzzer.
 
-1. Mental-model video.
-2. “What the compiler actually does” experiment.
-3. Broken-code/debugging video.
-4. Build-it-from-scratch implementation.
-5. Benchmark/performance investigation.
-6. Edge-case/interview-trap compilation.
-7. Code-review/refactor video.
-8. Mock-interview video.
-9. Standard-version comparison.
-10. Architecture/API trade-off video.
+# Content rule
 
-One Scott item may generate one video or ten. That is expected.
+The video titles above are **minimum core videos**, not a cap. If Unit 036 (`unique_ptr`) produces six excellent videos—internals, implementation, deleters, arrays, PImpl and interview questions—make all six. Do not combine them merely to maintain a schedule.
 
-Every serious CppValley video should end with **Interview Mode**:
+# Final meaning of “Curriculum 01 complete”
 
-- What is the simplest correct explanation?
-- What changes for `const`?
-- What changes for lvalue/rvalue?
-- What are the lifetime/ownership implications?
-- What are the exception implications?
-- What are the performance implications?
-- What is the common misconception?
-- What alternative design would you consider?
+You are done only when:
+- Scott 1–42 can be explained without rereading.
+- Modern C++17/20/23 features above are usable, not merely recognizable.
+- Templates and STL are strong enough to reason about unfamiliar generic code.
+- Lifetime/ownership/exception safety are automatic code-review instincts.
+- You can debug from compiler/sanitizer/debugger evidence.
+- You can discuss ABI/toolchain issues at a practical systems-engineering level.
+- You pass Units 133–136.
 
----
-
-# 16. Final Curriculum 01 exit examination
-
-Do **not** mark C++ mastery complete because the reading list is finished.
-
-The final gate is multi-part.
-
-## Gate A — Code prediction
-
-100 mixed snippets across:
-- initialization,
-- overload resolution,
-- deduction,
-- lifetime,
-- move/forwarding,
-- templates,
-- STL,
-- modern-standard features.
-
-Target: **>=90%**, with explanation, not guessing.
-
-## Gate B — Implementation
-
-Closed-book:
-- RAII wrapper,
-- move-only type,
-- forwarding wrapper,
-- simplified vector core,
-- one constrained generic API.
-
-## Gate C — Debugging
-
-Diagnose at least:
-- dangling reference,
-- UAF,
-- iterator invalidation,
-- ODR/link error,
-- incorrect virtual override,
-- exception-safety failure,
-- forwarding-reference overload bug,
-- string_view lifetime bug,
-- UB exposed by optimization.
-
-## Gate D — Design review
-
-Given an API, discuss:
-- ownership,
-- lifetime,
-- constness,
-- error model,
-- copying/moving,
-- exception guarantee,
-- ABI impact,
-- template vs virtual vs type-erased design,
-- standard-library vocabulary types.
-
-## Gate E — Staff-level C++ interview
-
-90–120 minutes, no notes:
-
-1. 20 min core language/lifetime.
-2. 20 min templates/modern C++.
-3. 20 min STL/API trade-offs.
-4. 20 min debugging/toolchain/ABI.
-5. 20–40 min code/design problem.
-
-Pass only when answers are precise, examples are correct, and uncertainty is explicitly bounded.
-
----
-
-# 17. What comes after Curriculum 01
-
-Once this exit gate is consistently passed, continue DreamRun in dependency order:
-
-1. Concurrency and C++ memory model — Anthony Williams.
-2. CPU/memory/performance — Fedor Pikus + profiling.
-3. Linux systems and networking.
-4. Low-latency/HFT engineering.
-5. C++ architecture and Staff design — Klaus Iglberger.
-6. Distributed systems + system design.
-7. CUDA/GPU.
-8. AI fundamentals and inference systems.
-9. Full company-specific interview conversion.
-
-DSA remains a parallel spaced-repetition track throughout.
-
----
-
-# 18. Final completeness rule
-
-This curriculum is a **living canonical checklist**, not an archive.
-
-When a missing C++ topic is discovered:
-
-- add it here in the correct dependency location,
-- add a mastery gate/lab if needed,
-- do **not** create competing `v2`, `old`, or `extra-cpp-plan` files,
-- do not reduce existing depth to keep the document short.
-
-The target is not to say “I finished Scott Meyers.” The target is to be able to reason about unfamiliar C++ code, write robust modern C++, debug difficult failures, discuss trade-offs, and survive deep follow-up questions from a strong C++ interviewer.
+Then move to **Curriculum 02 — Concurrency and the C++ Memory Model**.
